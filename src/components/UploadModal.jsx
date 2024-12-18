@@ -25,6 +25,8 @@ const UploadModal = ({ onClose, onUpload }) => {
       onClose();
     }
   };
+
+  const [link, setLink] = useState("");
   
   const handleUploadClick = () => {
     if (link.trim() !== "") {
