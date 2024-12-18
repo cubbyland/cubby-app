@@ -18,10 +18,37 @@ const AppContainer = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1 style={{ textAlign: "center" }}>My Cubby Videos</h1>
-      {/* Video List with pinning functionality */}
+    <div style={{ padding: "20px", textAlign: "center" }}>
+      {/* Title */}
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>My Cubby Videos</h1>
+
+      {/* Add Video Button */}
+      <button
+        onClick={() => setModalOpen(true)} // Opens the modal
+        style={{
+          margin: "20px",
+          padding: "10px 20px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "16px",
+          borderRadius: "5px",
+        }}
+      >
+        Add Video
+      </button>
+
+      {/* Video List */}
       <VideoList videos={videos} onPin={handlePin} />
+
+      {/* Upload Modal */}
+      {isModalOpen && (
+        <UploadModal
+          onClose={() => setModalOpen(false)}
+          onAdd={addVideo}
+        />
+      )}
     </div>
   );
 };
