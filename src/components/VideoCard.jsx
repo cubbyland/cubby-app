@@ -1,0 +1,42 @@
+import React from "react";
+import VideoList from "./components/VideoList";
+
+const VideoCard = ({ title, url, onPin }) => {
+  return (
+    <div
+      style={{
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        padding: "16px",
+        textAlign: "center",
+      }}
+    >
+      <h3>{title}</h3>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: "blue", textDecoration: "underline" }}
+      >
+        Watch Video
+      </a>
+      <br />
+      <button
+        onClick={onPin} // Safely trigger onPin
+        style={{
+          marginTop: "8px",
+          padding: "8px",
+          backgroundColor: "#f0ad4e",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          borderRadius: "4px",
+        }}
+      >
+        Pin
+      </button>
+    </div>
+  );
+};
+
+export default VideoCard;
