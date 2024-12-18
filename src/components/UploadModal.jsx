@@ -21,10 +21,19 @@ const UploadModal = ({ onClose, onUpload }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && link.trim() !== "") {
       onUpload(link);
+      setLink(""); // Clear input after upload
       onClose();
     }
-  };  
-  //comenttest
+  };
+  
+  const handleUploadClick = () => {
+    if (link.trim() !== "") {
+      onUpload(link);
+      setLink(""); // Clear input after upload
+      onClose();
+    }
+  };
+  
 
   return (
     <div
@@ -69,7 +78,7 @@ const UploadModal = ({ onClose, onUpload }) => {
       )}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
-          onClick={handleUpload}
+          onClick={handleUploadClick}
           style={{
             backgroundColor: "#4CAF50",
             color: "white",
