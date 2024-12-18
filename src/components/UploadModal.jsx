@@ -4,18 +4,23 @@ const UploadModal = ({ onClose, onUpload }) => {
   const [link, setLink] = useState("");
   const [error, setError] = useState(""); // State for error messages
 
-  const handleUpload = () => {
-    const isValidXURL = link.startsWith("https://x.com/");
-    if (!isValidXURL) {
-      setError("Only URLs from https://x.com/ are allowed.");
-      return;
-    }
 
-    const isValidLink = /^https:\/\/x\.com\/.*$/.test(link.trim());
-      if (!isValidLink) {
-        setError("Invalid link. Please paste a valid link from x.com.");
-      return;
-    }
+  const isValidLink = (link) => {
+    return link.trim() !== "" && link.startsWith("https://x.com/");
+  };
+  
+
+  const handleUpload = () => {
+    const handleUpload = () => {
+      if (isValidLink(link)) { 
+        onUpload(link);      // Call the upload function passed as a prop
+        setLink("");         // Clear the input field after upload
+        setError("");        // Clear any previous error message
+      } else {
+        setError("Please enter a valid X.com link."); // Show an error message
+      }
+    };
+    
 
     // Clear error and upload the URL
     setError("");
@@ -24,8 +29,6 @@ const UploadModal = ({ onClose, onUpload }) => {
     onClose(); // Close the modal
   };
 
-  
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && link.trim() !== "") {
       handleUpload();
@@ -33,6 +36,9 @@ const UploadModal = ({ onClose, onUpload }) => {
   };
   
   const handleUploadClick = () => {
+      e.preventDefault();
+      handleUpload(); // Reuse the same logic for DRY (Don't Repeat Yourself) code
+    
     if (link.trim() !== "") {
       onUpload(link);
       setLink(""); // Clear input after upload
