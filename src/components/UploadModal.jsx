@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 
 const UploadModal = ({ onClose, onUpload }) => {
-  const [videoURL, setVideoURL] = useState("");
+  const [link, setLink] = useState("");
   const [error, setError] = useState(""); // State for error messages
 
   const handleUpload = () => {
     const isValidXURL = videoURL.startsWith("https://x.com/");
     if (!isValidXURL) {
       setError("Only URLs from https://x.com/ are allowed.");
+      return;
+    }
+
+    const isValidLink = /^https:\/\/x\.com\/.*$/.test(link.trim());
+      if (!isValidLink) {
+        setError("Invalid link. Please paste a valid link from x.com.");
       return;
     }
 
@@ -18,8 +24,11 @@ const UploadModal = ({ onClose, onUpload }) => {
     onClose(); // Close the modal
   };
 
+  
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && link.trim() !== "") {
+      handleUpload();
       onUpload(link);
       setLink(""); // Clear input after upload
       onClose();
