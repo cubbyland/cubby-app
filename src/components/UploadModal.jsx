@@ -1,94 +1,93 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const UploadModal = ({ onClose, onUpload }) => {
-  const [link, setLink] = useState("");
-  const inputRef = useRef(null); // Reference for the input field
+  const [videoURL, setVideoURL] = useState("");
+  const [error, setError] = useState(""); // State for error messages
 
-  // Focus the input when the modal opens
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+  const handleUpload = () => {
+    const isValidXURL = videoURL.startsWith("https://x.com/");
+    if (!isValidXURL) {
+      setError("Only URLs from https://x.com/ are allowed.");
+      return;
     }
-  }, []);
 
-  // Handle "Enter" key press
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      onUpload(link);
-      onClose();
-    }
+    // Clear error and upload the URL
+    setError("");
+    onUpload(videoURL);
+    setVideoURL("");
+    onClose(); // Close the modal
   };
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <h2>Upload Video Link</h2>
-        <input
-          ref={inputRef} // Attach the ref to the input field
-          type="text"
-          placeholder="Paste link here..."
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
-          onKeyDown={handleKeyDown} // Trigger upload on "Enter" key
-          style={styles.input}
-        />
-        <button onClick={() => { onUpload(link); onClose(); }} style={styles.button}>
+    <div
+      style={{
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        backgroundColor: "white",
+        padding: "20px",
+        boxShadow: "0px 4px 6px rgba(0,0,0,0.2)",
+        zIndex: 1000,
+        borderRadius: "8px",
+        width: "300px",
+      }}
+    >
+      <h2 style={{ marginBottom: "15px", textAlign: "center" }}>Upload Video Link</h2>
+      <input
+        type="text"
+        placeholder="Enter Video URL (x.com)"
+        value={videoURL}
+        onChange={(e) => setVideoURL(e.target.value)}
+        style={{
+          marginBottom: "10px",
+          width: "100%",
+          padding: "8px",
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+        }}
+      />
+      {error && (
+        <div
+          style={{
+            color: "red",
+            marginBottom: "10px",
+            textAlign: "center",
+          }}
+        >
+          {error}
+        </div>
+      )}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button
+          onClick={handleUpload}
+          style={{
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            padding: "10px 20px",
+            cursor: "pointer",
+            borderRadius: "5px",
+          }}
+        >
           Upload
         </button>
-        <button onClick={onClose} style={styles.closeButton}>
+        <button
+          onClick={onClose}
+          style={{
+            backgroundColor: "#f44336",
+            color: "white",
+            border: "none",
+            padding: "10px 20px",
+            cursor: "pointer",
+            borderRadius: "5px",
+          }}
+        >
           Close
         </button>
       </div>
     </div>
   );
-};
-
-// Styling for the modal
-const styles = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  },
-  modal: {
-    backgroundColor: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    width: "300px",
-    textAlign: "center",
-  },
-  input: {
-    width: "100%",
-    padding: "8px",
-    marginBottom: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-  },
-  button: {
-    backgroundColor: "green",
-    color: "white",
-    padding: "8px 12px",
-    marginRight: "10px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  closeButton: {
-    backgroundColor: "red",
-    color: "white",
-    padding: "8px 12px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
 };
 
 export default UploadModal;

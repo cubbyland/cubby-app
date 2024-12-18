@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import VideoList from "../components/VideoList";
+import UploadModal from "../components/UploadModal";
 
 const AppContainer = () => {
   const [videos, setVideos] = useState([
     { id: 1, title: "Sample Video 1", url: "https://example.com/video1" },
     { id: 2, title: "Sample Video 2", url: "https://example.com/video2" },
-    { id: 3, title: "New Video 3", url: "https://example.com/video3" },
   ]);
+  const [isModalOpen, setModalOpen] = useState(false); // <-- FIX: Add this state
+  const [pinnedVideos, setPinnedVideos] = useState([]); // State for pinned videos
 
-  // Handle pinning logic
+  const addVideo = (link) => {
+    const newVideo = { id: Date.now(), title: "New Video", url: link };
+    setVideos((prevVideos) => [...prevVideos, newVideo]);
+  };  
+
   const handlePin = (pinnedVideo) => {
-    // Move the pinned video to the start of the array
-    setVideos((prevVideos) => {
-      const updatedVideos = prevVideos.filter((video) => video.id !== pinnedVideo.id);
-      return [pinnedVideo, ...updatedVideos];
-    });
+    // Move the pinned video to the front of the list
+    setVideos((prevVideos) => [
+      pinnedVideo,
+      ...prevVideos.filter((video) => video.id !== pinnedVideo.id),
+    ]);
   };
 
   return (
@@ -46,7 +52,7 @@ const AppContainer = () => {
       {isModalOpen && (
         <UploadModal
           onClose={() => setModalOpen(false)}
-          onAdd={addVideo}
+          onUpload={addVideo}
         />
       )}
     </div>
