@@ -32,6 +32,22 @@ const VideoCard = ({ title, url, onPin }) => {
           borderRadius: "4px",
         }}
       >
+      
+      <button
+        style={{
+          backgroundColor: "red",
+          color: "white",
+          border: "none",
+          padding: "5px 10px",
+          cursor: "pointer",
+          borderRadius: "5px",
+          marginTop: "5px",
+        }}
+        onClick={onDelete}
+      >
+        Delete
+      </button>
+    
         Pin
       </button>
     </div>

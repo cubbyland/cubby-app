@@ -15,6 +15,11 @@ const AppContainer = () => {
     setVideos((prevVideos) => [...prevVideos, newVideo]);
   };  
 
+  const handleDeleteVideo = (id) => {
+    setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
+  };
+  
+
   const handlePin = (pinnedVideo) => {
     // Move the pinned video to the front of the list
     setVideos((prevVideos) => [
@@ -46,7 +51,7 @@ const AppContainer = () => {
       </button>
 
       {/* Video List */}
-      <VideoList videos={videos} onPin={handlePin} />
+      <VideoList videos={videos} onPin={handlePin} onDelete={handleDeleteVideo} />
 
       {/* Upload Modal */}
       {isModalOpen && (
