@@ -17,6 +17,7 @@ const VideoList = ({ videos, onPin, onDelete }) => {
           key={video.id || video.title} // Use `id` as the unique key
           title={video.title}
           url={video.url}
+          description={video.description || "No description available"}
           onPin={() => {
             if (typeof onPin === "function") {
               onPin(video);

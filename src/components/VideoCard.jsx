@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const VideoCard = ({ title, url, onPin, onDelete }) => {
   const  [isHovered, setIsHovered] = useState(false);
