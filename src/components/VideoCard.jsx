@@ -33,7 +33,7 @@ const VideoCard = ({ title, url, onPin, onDelete }) => {
             borderRadius: "4px",
           }}
         >
-          Delete
+          Pin
         </button>
         <button
           style={{
@@ -47,7 +47,7 @@ const VideoCard = ({ title, url, onPin, onDelete }) => {
           }}
           onClick={onDelete}
         >
-          Pin
+          Delete
         </button>
       </div>
     </div>
