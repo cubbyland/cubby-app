@@ -11,7 +11,6 @@ const UploadModal = ({ onClose, onUpload }) => {
   
 
   const handleUpload = () => {
-    const handleUpload = () => {
       if (isValidLink(link)) { 
         onUpload(link);      // Call the upload function passed as a prop
         setLink("");         // Clear the input field after upload
@@ -35,7 +34,7 @@ const UploadModal = ({ onClose, onUpload }) => {
     }
   };
   
-  const handleUploadClick = () => {
+  const handleUploadClick = (e) => {
       e.preventDefault();
       handleUpload(); // Reuse the same logic for DRY (Don't Repeat Yourself) code
     
@@ -68,7 +67,7 @@ const UploadModal = ({ onClose, onUpload }) => {
         placeholder="Enter Video URL (x.com)"
         value={link}
         onChange={(e) => setLink(e.target.value)}
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => {handleKeyDown(e);}}
         autoFocus
         style={{
           marginBottom: "10px",
