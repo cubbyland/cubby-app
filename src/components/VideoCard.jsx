@@ -1,6 +1,6 @@
 import React from "react";
 
-const VideoCard = ({ title, url, onPin }) => {
+const VideoCard = ({ title, url, onPin, onDelete }) => {
   return (
     <div
       style={{
