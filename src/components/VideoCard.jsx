@@ -20,36 +20,36 @@ const VideoCard = ({ title, url, onPin, onDelete }) => {
         Watch Video
       </a>
       <br />
-      <button
-        onClick={onPin} // Pin button calls the onPin function
-        style={{
-          marginTop: "8px",
-          padding: "8px",
-          backgroundColor: "#f0ad4e",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          borderRadius: "4px",
-        }}
-      >
-      
-      <button
-        style={{
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-          padding: "5px 10px",
-          cursor: "pointer",
-          borderRadius: "5px",
-          marginTop: "5px",
-        }}
-        onClick={onDelete}
-      >
-        Delete
-      </button>
-    
-        Pin
-      </button>
+      <div style={{ marginTop: "10px" }}> 
+        <button
+          onClick={onPin} // Pin button calls the onPin function
+          style={{
+            marginTop: "8px",
+            padding: "8px",
+            backgroundColor: "#f0ad4e",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+            borderRadius: "4px",
+          }}
+        >
+          Delete
+        </button>
+        <button
+          style={{
+            backgroundColor: "red",
+            color: "white",
+            border: "none",
+            padding: "5px 10px",
+            cursor: "pointer",
+            borderRadius: "5px",
+            marginTop: "5px",
+          }}
+          onClick={onDelete}
+        >
+          Pin
+        </button>
+      </div>
     </div>
   );
 };
