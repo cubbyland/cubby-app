@@ -17,6 +17,7 @@ const UploadModal = ({ onClose, onUpload }) => {
         setError("");        // Clear any previous error message
       } else {
         setError("Please enter a valid X.com link."); // Show an error message
+        return;
       }
     };
     
