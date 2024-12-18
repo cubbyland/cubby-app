@@ -5,7 +5,7 @@ const UploadModal = ({ onClose, onUpload }) => {
   const [error, setError] = useState(""); // State for error messages
 
   const handleUpload = () => {
-    const isValidXURL = videoURL.startsWith("https://x.com/");
+    const isValidXURL = link.startsWith("https://x.com/");
     if (!isValidXURL) {
       setError("Only URLs from https://x.com/ are allowed.");
       return;
@@ -19,8 +19,8 @@ const UploadModal = ({ onClose, onUpload }) => {
 
     // Clear error and upload the URL
     setError("");
-    onUpload(videoURL);
-    setVideoURL("");
+    onUpload(link.trim());
+    setLink("");
     onClose(); // Close the modal
   };
 
