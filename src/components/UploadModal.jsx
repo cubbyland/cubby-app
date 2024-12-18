@@ -29,13 +29,8 @@ const UploadModal = ({ onClose, onUpload }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && link.trim() !== "") {
       handleUpload();
-      onUpload(link);
-      setLink(""); // Clear input after upload
-      onClose();
     }
   };
-
-  const [link, setLink] = useState("");
   
   const handleUploadClick = () => {
     if (link.trim() !== "") {
@@ -68,6 +63,7 @@ const UploadModal = ({ onClose, onUpload }) => {
         value={link}
         onChange={(e) => setLink(e.target.value)}
         onKeyDown={handleKeyDown}
+        autoFocus
         style={{
           marginBottom: "10px",
           width: "100%",
