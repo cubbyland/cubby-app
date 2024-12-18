@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import AppContainer from "./containers/AppContainer"; // Correct path
+import AppContainer from "./containers/AppContainer";
 import "./main.css";
 
 const App = () => {
@@ -8,7 +8,7 @@ const App = () => {
     <AppContainer>
       <h1 style={{ textAlign: "center", margin: "20px 0" }}>My Cubby Videos</h1>
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        Welcome to the Cubby App
+        <p>Welcome to the Cubby App</p>
       </div>
     </AppContainer>
   );
