@@ -21,7 +21,7 @@ const VideoCard = ({ title, url, onPin }) => {
       </a>
       <br />
       <button
-        onClick={onPin}
+        onClick={onPin} // Pin button calls the onPin function
         style={{
           marginTop: "8px",
           padding: "8px",
