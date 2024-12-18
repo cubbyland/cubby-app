@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const VideoCard = ({ title, url, onPin, onDelete }) => {
+const VideoCard = ({ title, url, description, onPin, onDelete }) => {
   const  [isHovered, setIsHovered] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false); 
 
@@ -16,6 +16,7 @@ const VideoCard = ({ title, url, onPin, onDelete }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <h3>{title}</h3>
+      <p>{description}</p>
       <a
         href={url}
         target="_blank"
@@ -24,24 +25,7 @@ const VideoCard = ({ title, url, onPin, onDelete }) => {
       >
         Watch Video
       </a>
-      {isHovered && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            color: "white",
-            padding: "5px",
-            borderRadius: "5px",
-            fontSize: "12px",
-          }}
-        >  
 
-          {description || "No description available"}
-        </div>
-      )}
 
       {/* Confirmation Modal */}
       {showConfirm && (
