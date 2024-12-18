@@ -18,6 +18,13 @@ const UploadModal = ({ onClose, onUpload }) => {
     onClose(); // Close the modal
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && link.trim() !== "") {
+      onUpload(link);
+      onClose();
+    }
+  };  
+
   return (
     <div
       style={{
@@ -37,8 +44,9 @@ const UploadModal = ({ onClose, onUpload }) => {
       <input
         type="text"
         placeholder="Enter Video URL (x.com)"
-        value={videoURL}
-        onChange={(e) => setVideoURL(e.target.value)}
+        value={link}
+        onChange={(e) => setLink(e.target.value)}
+        onKeyDown={handleKeyDown}
         style={{
           marginBottom: "10px",
           width: "100%",
