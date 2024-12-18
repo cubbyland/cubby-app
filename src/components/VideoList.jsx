@@ -1,8 +1,8 @@
 import React from "react";
 import VideoCard from "./VideoCard";
 
-const VideoList = ({ videos, onPin }) => {
-  console.log("onPin in VideoList:", typeof onPin); // Debugging check
+const VideoList = ({ videos, onPin, onDelete }) => {
+  console.log("onPin in VideoList:", typeof onPin); // Debugging output
 
   return (
     <div
@@ -14,17 +14,23 @@ const VideoList = ({ videos, onPin }) => {
     >
       {videos.map((video) => (
         <VideoCard
-          key={video.id || video.title} // Use `id` as the unique key. Fallback to `title` if no id exists.
+          key={video.id || video.title} // Use `id` as the unique key
           title={video.title}
           url={video.url}
-          onPin={() => 
+          onPin={() => {
             if (typeof onPin === "function") {
               onPin(video);
             } else {
               console.error("onPin is not a function!");
             }
-          }
-          onDelete={() => onDelete(video.id)} // New delete prop
+          }}
+          onDelete={() => {
+            if (typeof onDelete === "function") {
+              onDelete(video.id);
+            } else {
+              console.error("onDelete is not a function!");
+            }
+          }}
         />
       ))}
     </div>
