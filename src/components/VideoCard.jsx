@@ -1,5 +1,4 @@
 import React from "react";
-import VideoList from "./components/VideoList";
 
 const VideoCard = ({ title, url, onPin }) => {
   return (
@@ -22,7 +21,7 @@ const VideoCard = ({ title, url, onPin }) => {
       </a>
       <br />
       <button
-        onClick={onPin} // Safely trigger onPin
+        onClick={onPin}
         style={{
           marginTop: "8px",
           padding: "8px",
