@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/modals.css"; // Import modal styles
+import "../../styles/modals.css"; // Import modal styles
 
 const ErrorModal = ({ onClose, message }) => {
   return (

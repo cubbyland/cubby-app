@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/videos.css"; // Import the styles for videos
+import "../../styles/videos.css"; // Import the styles for videos
 
 const VideoCard = ({ title, url, description, onPin, onDelete }) => {
   const [isHovered, setIsHovered] = useState(false); // Hover state for card

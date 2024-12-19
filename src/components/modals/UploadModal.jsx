@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../styles/modals.css"; // Import modal styles
-import "../styles/forms.css"; // Import form styles
+import "../../styles/modals.css"; // Import modal styles
+import "../../styles/forms.css"; // Import form styles
 
 const UploadModal = ({ onClose, onUpload }) => {
   const [link, setLink] = useState("");

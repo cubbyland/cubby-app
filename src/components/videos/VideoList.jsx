@@ -1,6 +1,6 @@
 import React from "react";
 import VideoCard from "./VideoCard";
-import "../styles/videos.css"; // Updated to import the correct CSS file
+import "../../styles/videos.css"; // Updated to import the correct CSS file
 
 const VideoList = ({ videos, onPin, onDelete }) => {
   console.log("onPin in VideoList:", typeof onPin); // Debugging output
