@@ -4,48 +4,36 @@ const UploadModal = ({ onClose, onUpload }) => {
   const [link, setLink] = useState("");
   const [error, setError] = useState(""); // State for error messages
 
-
+  // Validation function to check if the link is valid
   const isValidLink = (link) => {
     return link.trim() !== "" && link.startsWith("https://x.com/");
   };
-  
 
+  // Handle upload logic with validation
   const handleUpload = () => {
-      if (isValidLink(link)) { 
-        onUpload(link);      // Call the upload function passed as a prop
-        setLink("");         // Clear the input field after upload
-        setError("");        // Clear any previous error message
-      } else {
-        setError("Please enter a valid X.com link."); // Show an error message
-        return;
-      }
-    };
-    
-
-    // Clear error and upload the URL
-    setError("");
-    onUpload(link.trim());
-    setLink("");
-    onClose(); // Close the modal
+    if (isValidLink(link)) {
+      onUpload(link);      // Call the upload function passed as a prop
+      setLink("");         // Clear the input field after upload
+      setError("");        // Clear any previous error message
+      onClose();           // Close the modal
+    } else {
+      setError("Please enter a valid X.com link."); // Show an error message
+    }
   };
 
+  // Handle the Enter key press
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && link.trim() !== "") {
-      handleUpload();
+    if (e.key === "Enter") {
+      e.preventDefault();  // Prevent default form submission
+      handleUpload();      // Reuse the same logic for upload
     }
   };
-  
+
+  // Handle the Upload button click
   const handleUploadClick = (e) => {
-      e.preventDefault();
-      handleUpload(); // Reuse the same logic for DRY (Don't Repeat Yourself) code
-    
-    if (link.trim() !== "") {
-      onUpload(link);
-      setLink(""); // Clear input after upload
-      onClose();
-    }
+    e.preventDefault();    // Prevent default form submission
+    handleUpload();        // Reuse the same logic for upload
   };
-  
 
   return (
     <div
@@ -68,7 +56,7 @@ const UploadModal = ({ onClose, onUpload }) => {
         placeholder="Enter Video URL (x.com)"
         value={link}
         onChange={(e) => setLink(e.target.value)}
-        onKeyDown={(e) => {handleKeyDown(e);}}
+        onKeyDown={handleKeyDown} // Reuse the keydown handler
         autoFocus
         style={{
           marginBottom: "10px",
@@ -91,7 +79,7 @@ const UploadModal = ({ onClose, onUpload }) => {
       )}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
-          onClick={handleUploadClick}
+          onClick={handleUploadClick} // Reuse the click handler
           style={{
             backgroundColor: "#4CAF50",
             color: "white",
