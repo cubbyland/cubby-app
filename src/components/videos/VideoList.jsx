@@ -1,7 +1,7 @@
 import React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import VideoCard from "./VideoCard";
-import "../../styles/videos.css"; // Updated to import the correct CSS file
+import "../../styles/videos.css";
 
 const VideoList = ({ videos, onDelete, onReorder }) => {
   // Handler for drag-and-drop reordering
@@ -21,7 +21,7 @@ const VideoList = ({ videos, onDelete, onReorder }) => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="video-list">
+      <Droppable droppableId="video-list" direction="vertical">
         {(provided) => (
           <div
             className="video-list-container"
@@ -37,7 +37,6 @@ const VideoList = ({ videos, onDelete, onReorder }) => {
                     {...provided.dragHandleProps}
                   >
                     <VideoCard
-                      key={video.id}
                       title={video.title}
                       url={video.url}
                       description={video.description || "No description available"}
