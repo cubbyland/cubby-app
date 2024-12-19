@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import VideoList from "../components/VideoList";
-import UploadModal from "../components/UploadModal";
-import ErrorModal from "../components/ErrorModal";
+import VideoList from "../components/videos/VideoList";
+import UploadModal from "../components/modals/UploadModal";
+import ErrorModal from "../components/modals/ErrorModal";
+import "../styles/main.css"; // Importing global styles
 
 const AppContainer = () => {
   const [videos, setVideos] = useState([
@@ -10,28 +11,24 @@ const AppContainer = () => {
   ]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
-  const [error, setError] = useState(""); // State for max limit error
 
-
+  // Function to add a video, with validation for the maximum limit
   const addVideo = (link) => {
     if (videos.length >= 10) {
-      setErrorModalOpen(true); // Open the error modal
+      setErrorModalOpen(true);
       return;
     }
-
     const newVideo = { id: Date.now(), title: "New Video", url: link };
     setVideos((prevVideos) => [...prevVideos, newVideo]);
   };
 
+  // Function to delete a video by ID
   const handleDeleteVideo = (id) => {
-    console.log("deleting video with id: ", id);
     setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
-    setError("");
-    console.log("error cleared: ", error);
   };
 
+  // Function to pin a video by bringing it to the top of the list
   const handlePin = (pinnedVideo) => {
-    // Move the pinned video to the front of the list
     setVideos((prevVideos) => [
       pinnedVideo,
       ...prevVideos.filter((video) => video.id !== pinnedVideo.id),
@@ -39,33 +36,20 @@ const AppContainer = () => {
   };
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
-      {/* Title */}
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>My Cubby Videos</h1>
+    <div className="app-container">
+      <h1 className="app-title">My Cubby Videos</h1>
 
-      {/* Add Video Button */}
       <button
         onClick={() =>
           videos.length >= 10 ? setErrorModalOpen(true) : setModalOpen(true)
         }
-        style={{
-          margin: "20px",
-          padding: "10px 20px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "16px",
-          borderRadius: "5px",
-        }}
+        className="add-video-button"
       >
         Add Video
       </button>
 
-      {/* Video List */}
       <VideoList videos={videos} onPin={handlePin} onDelete={handleDeleteVideo} />
 
-      {/* Modals */}
       {isModalOpen && (
         <UploadModal
           onClose={() => setModalOpen(false)}
