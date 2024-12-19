@@ -47,51 +47,8 @@
     text-align: center;
   }
   
-  /* Form Buttons */
-  .form-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .submit-button,
-  .cancel-button {
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .submit-button {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .submit-button:hover {
-    background-color: #45a049;
-  }
-  
-  .cancel-button {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  .cancel-button:hover {
-    background-color: #d32f2f;
-  }
-  
-  /* Disabled State */
-  .form-input:disabled,
-  .submit-button:disabled,
-  .cancel-button:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-    color: #666;
-  }
-
-  /* Bio Section Styles */
-.bio-section {
+  /* Bio Section */
+  .bio-section {
     margin: 20px 0;
   }
   
@@ -110,7 +67,69 @@
     border-color: #007bff;
   }
   
-  /* Social Links Section Styles */
+  .bio-textarea-large {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+  }
+
+  /* Inline Bio Display */
+  .bio-display {
+    font-size: 16px;
+    color: #555;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .bio-display:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Action Buttons for Bio Editing */
+  .bio-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .save-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .save-button:hover {
+    background-color: #0056b3;
+  }
+
+  .cancel-button {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .cancel-button:hover {
+    background-color: #5a6268;
+  }
+  
+  /* Social Links Section */
   .social-links-section {
     display: flex;
     flex-direction: column;
@@ -141,5 +160,3 @@
   .social-icon:hover {
     text-decoration: underline;
   }
-  
-  

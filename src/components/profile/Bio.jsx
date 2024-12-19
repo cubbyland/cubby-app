@@ -2,39 +2,54 @@ import React, { useState } from "react";
 import "../../styles/forms.css";
 
 const Bio = ({ bio, onBioChange }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tempBio, setTempBio] = useState(bio);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentBio, setCurrentBio] = useState(bio);
 
-  const handleSave = () => {
-    onBioChange(tempBio);
-    setIsModalOpen(false);
+  // Function to handle editing toggle
+  const toggleEditing = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  // Function to handle saving changes
+  const saveChanges = () => {
+    onBioChange(currentBio); // Pass updated bio to parent
+    setIsEditing(false);
+  };
+
+  // Function to handle canceling changes
+  const cancelChanges = () => {
+    setCurrentBio(bio); // Revert to original bio
+    setIsEditing(false);
+  };
+
+  // Function to handle input change
+  const handleInputChange = (e) => {
+    setCurrentBio(e.target.value);
   };
 
   return (
     <div className="bio-section">
-      <p className="bio-text">{bio || "No bio available."}</p>
-      <button className="edit-bio-button" onClick={() => setIsModalOpen(true)}>
-        Edit
-      </button>
-
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Edit Bio</h3>
-            <textarea
-              className="bio-textarea-large"
-              value={tempBio}
-              onChange={(e) => setTempBio(e.target.value)}
-            />
-            <div className="modal-actions">
-              <button className="save-button" onClick={handleSave}>
-                Save
-              </button>
-              <button className="cancel-button" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </button>
-            </div>
+      {isEditing ? (
+        <div className="bio-edit-container">
+          <textarea
+            className="bio-textarea"
+            value={currentBio}
+            onChange={handleInputChange}
+            placeholder="Enter your bio here..."
+            autoFocus
+          />
+          <div className="bio-buttons">
+            <button className="save-button" onClick={saveChanges}>
+              Save
+            </button>
+            <button className="cancel-button" onClick={cancelChanges}>
+              Cancel
+            </button>
           </div>
+        </div>
+      ) : (
+        <div className="bio-display" onClick={toggleEditing}>
+          {bio || "Click to add your bio..."}
         </div>
       )}
     </div>
