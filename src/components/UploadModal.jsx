@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const UploadModal = ({ onClose, onUpload, isMaxVideos }) => {
+const UploadModal = ({ onClose, onUpload }) => {
   const [link, setLink] = useState("");
   const [error, setError] = useState(""); // State for error messages
 
@@ -11,11 +11,6 @@ const UploadModal = ({ onClose, onUpload, isMaxVideos }) => {
 
   // Handle upload logic with validation
   const handleUpload = () => {
-    if (isMaxVideos) {
-      setError("10 video limit reached. Delete a video to upload a new one.");
-      return;
-    }
-
     if (isValidLink(link)) {
       onUpload(link);      // Call the upload function passed as a prop
       setLink("");         // Clear the input field after upload
@@ -57,28 +52,20 @@ const UploadModal = ({ onClose, onUpload, isMaxVideos }) => {
     >
       <h2 style={{ marginBottom: "15px", textAlign: "center" }}>Upload Video Link</h2>
       
-      {/* Error message for max limit */}
-      {isMaxVideos && (
-        <div style={{ color: "red", marginBottom: "15px", textAlign: "center" }}>
-          You have reached the maximum limit of 10 videos. Please delete a video to upload a new one.
-        </div>
-      )}
-      
       {/* Input field for video link */}
       <input
         type="text"
         placeholder="Enter Video URL (x.com)"
         value={link}
         onChange={(e) => setLink(e.target.value)}
-        onKeyDown={handleKeyDown} // Reuse the keydown handler
-        disabled={isMaxVideos} // Disable input if max limit is reached
+        onKeyDown={handleKeyDown}
         autoFocus
         style={{
-          marginBottom: "10px",
-          width: "100%",
-          padding: "8px",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
+            marginBottom: "10px",
+            width: "100%",
+            padding: "8px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
         }}
       />
 
@@ -99,7 +86,6 @@ const UploadModal = ({ onClose, onUpload, isMaxVideos }) => {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           onClick={handleUploadClick} // Reuse the click handler
-          disabled={isMaxVideos} // Disable upload button if max videos reached
           style={{
             backgroundColor: "#4CAF50",
             color: "white",
@@ -111,6 +97,7 @@ const UploadModal = ({ onClose, onUpload, isMaxVideos }) => {
         >
           Upload
         </button>
+        
         <button
           onClick={onClose}
           style={{

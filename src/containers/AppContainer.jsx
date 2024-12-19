@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import VideoList from "../components/VideoList";
 import UploadModal from "../components/UploadModal";
+import ErrorModal from "../components/ErrorModal";
 
 const AppContainer = () => {
   const [videos, setVideos] = useState([
@@ -8,22 +9,20 @@ const AppContainer = () => {
     { id: 2, title: "Sample Video 2", url: "https://example.com/video2" },
   ]);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [error, setError] = useState(""); // State for max limit error
+  const [isErrorModalOpen, setErrorModalOpen] = useState(false);
 
   const addVideo = (link) => {
     if (videos.length >= 10) {
-      setError("You can only upload up to 10 videos.");
+      setErrorModalOpen(true); // Open the error modal
       return;
     }
 
     const newVideo = { id: Date.now(), title: "New Video", url: link };
     setVideos((prevVideos) => [...prevVideos, newVideo]);
-    setError(""); // Clear any existing error
   };
 
   const handleDeleteVideo = (id) => {
     setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
-    setError(""); // Clear error when a video is deleted
   };
 
   const handlePin = (pinnedVideo) => {
@@ -41,15 +40,16 @@ const AppContainer = () => {
 
       {/* Add Video Button */}
       <button
-        onClick={() => setModalOpen(true)}
-        disabled={videos.length >= 10} // Disable button if max limit is reached
+        onClick={() =>
+          videos.length >= 10 ? setErrorModalOpen(true) : setModalOpen(true)
+        }
         style={{
           margin: "20px",
           padding: "10px 20px",
-          backgroundColor: videos.length >= 10 ? "#ccc" : "#4CAF50",
+          backgroundColor: "#4CAF50",
           color: "white",
           border: "none",
-          cursor: videos.length >= 10 ? "not-allowed" : "pointer",
+          cursor: "pointer",
           fontSize: "16px",
           borderRadius: "5px",
         }}
@@ -57,22 +57,20 @@ const AppContainer = () => {
         Add Video
       </button>
 
-      {/* Error Message */}
-      {error && (
-        <div style={{ color: "red", marginBottom: "10px" }}>
-          {error}
-        </div>
-      )}
-
       {/* Video List */}
       <VideoList videos={videos} onPin={handlePin} onDelete={handleDeleteVideo} />
 
-      {/* Upload Modal */}
+      {/* Modals */}
       {isModalOpen && (
         <UploadModal
           onClose={() => setModalOpen(false)}
           onUpload={addVideo}
-          isMaxVideos={videos.length >= 10} // New prop to check video limit
+        />
+      )}
+      {isErrorModalOpen && (
+        <ErrorModal
+          onClose={() => setErrorModalOpen(false)}
+          message="You have reached the maximum limit of 10 videos. Please delete a video to upload a new one."
         />
       )}
     </div>
