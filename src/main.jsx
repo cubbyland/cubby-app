@@ -1,15 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import AppContainer from "./containers/AppContainer";
-import "./main.css";
+import "./styles/global.css";
 
 const App = () => {
   return (
     <AppContainer>
-      <h1 style={{ textAlign: "center", margin: "20px 0" }}>My Cubby Videos</h1>
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+      <header className="app-header">
+        <h1>My Cubby Videos</h1>
         <p>Welcome to the Cubby App</p>
-      </div>
+      </header>
     </AppContainer>
   );
 };
