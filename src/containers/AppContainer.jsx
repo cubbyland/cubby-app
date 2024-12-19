@@ -10,6 +10,8 @@ const AppContainer = () => {
   ]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
+  const [error, setError] = useState(""); // State for max limit error
+
 
   const addVideo = (link) => {
     if (videos.length >= 10) {
@@ -22,7 +24,10 @@ const AppContainer = () => {
   };
 
   const handleDeleteVideo = (id) => {
+    console.log("deleting video with id: ", id);
     setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
+    setError("");
+    console.log("error cleared: ", error);
   };
 
   const handlePin = (pinnedVideo) => {
