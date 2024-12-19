@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import VideoList from "../components/videos/VideoList";
 import UploadModal from "../components/modals/UploadModal";
 import ErrorModal from "../components/modals/ErrorModal";
-import "../styles/main.css"; // Importing global styles
+import "../styles/global.css"; // Importing global styles
 
 const AppContainer = () => {
   const [videos, setVideos] = useState([
