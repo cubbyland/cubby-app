@@ -11,7 +11,7 @@ const AppContainer = () => {
     { id: 1, title: "Sample Video 1", url: "https://example.com/video1" },
     { id: 2, title: "Sample Video 2", url: "https://example.com/video2" },
   ]);
-  const [bio, setBio] = useState("Click to edit your bio...");
+  const [bio, setBio] = useState("");
   const [socialLinks, setSocialLinks] = useState({
     twitter: "",
     instagram: "",
