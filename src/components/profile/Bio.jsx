@@ -2,18 +2,41 @@ import React, { useState } from "react";
 import "../../styles/forms.css";
 
 const Bio = ({ bio, onBioChange }) => {
-  const [isFocused, setIsFocused] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempBio, setTempBio] = useState(bio);
+
+  const handleSave = () => {
+    onBioChange(tempBio);
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="bio-section">
-      <textarea
-        className="bio-textarea"
-        value={isFocused ? bio : ""}
-        placeholder={!isFocused ? "Enter your bio here..." : ""}
-        onChange={(e) => onBioChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(bio.trim() !== "")}
-      />
+      <p className="bio-text">{bio || "No bio available."}</p>
+      <button className="edit-bio-button" onClick={() => setIsModalOpen(true)}>
+        Edit
+      </button>
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Edit Bio</h3>
+            <textarea
+              className="bio-textarea-large"
+              value={tempBio}
+              onChange={(e) => setTempBio(e.target.value)}
+            />
+            <div className="modal-actions">
+              <button className="save-button" onClick={handleSave}>
+                Save
+              </button>
+              <button className="cancel-button" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
