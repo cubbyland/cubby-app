@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import VideoList from "../components/videos/VideoList";
 import UploadModal from "../components/modals/UploadModal";
 import ErrorModal from "../components/modals/ErrorModal";
-import Bio from "../components/profile/Bio"; // Importing Bio component
-import SocialLinks from "../components/profile/SocialLinks"; // Importing SocialLinks component
+import Bio from "../components/profile/Bio";
+import SocialLinks from "../components/profile/SocialLinks";
 import "../styles/global.css";
 
 const AppContainer = () => {
@@ -18,38 +18,42 @@ const AppContainer = () => {
     reddit: "",
     tiktok: "",
   });
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isVideoModalOpen, setVideoModalOpen] = useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
+  const [isSocialLinkModalOpen, setSocialLinkModalOpen] = useState(false);
+  const [editingPlatform, setEditingPlatform] = useState(null);
 
-  // Function to add a video, with validation for the maximum limit
-  const addVideo = (link) => {
+  // Add a new video
+  const addVideo = (data) => {
+    const { url } = data; // Destructure URL from the modal data
     if (videos.length >= 10) {
       setErrorModalOpen(true);
       return;
     }
-    const newVideo = { id: Date.now(), title: "New Video", url: link };
+    const newVideo = { id: Date.now(), title: "New Video", url };
     setVideos((prevVideos) => [...prevVideos, newVideo]);
   };
 
-  // Function to delete a video by ID
+  // Delete a video
   const handleDeleteVideo = (id) => {
     setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
   };
 
-  // Function to pin a video by bringing it to the top of the list
-  const handlePin = (pinnedVideo) => {
-    setVideos((prevVideos) => [
-      pinnedVideo,
-      ...prevVideos.filter((video) => video.id !== pinnedVideo.id),
-    ]);
-  };
-
-  // Function to handle changes in social links
-  const handleSocialLinkChange = (platform, url) => {
+  // Update social link for a platform
+  const updateSocialLink = (data) => {
+    const { platform, url } = data;
     setSocialLinks((prevLinks) => ({
       ...prevLinks,
       [platform]: url,
     }));
+    setSocialLinkModalOpen(false);
+    setEditingPlatform(null);
+  };
+
+  // Open modal for editing a specific social link
+  const editSocialLink = (platform) => {
+    setEditingPlatform(platform);
+    setSocialLinkModalOpen(true);
   };
 
   return (
@@ -62,24 +66,47 @@ const AppContainer = () => {
       {/* Social Links Section */}
       <SocialLinks
         socialLinks={socialLinks}
-        onSocialLinkChange={handleSocialLinkChange}
+        onEditSocialLink={editSocialLink}
       />
 
+      {/* Add Video Button */}
       <button
-        onClick={() =>
-          videos.length >= 10 ? setErrorModalOpen(true) : setModalOpen(true)
-        }
+        onClick={() => setVideoModalOpen(true)}
         className="add-video-button"
       >
         Add Video
       </button>
 
-      <VideoList videos={videos} onPin={handlePin} onDelete={handleDeleteVideo} />
+      {/* Video List */}
+      <VideoList videos={videos} onDelete={handleDeleteVideo} />
 
-      {isModalOpen && (
+      {/* Modals */}
+      {isVideoModalOpen && (
         <UploadModal
-          onClose={() => setModalOpen(false)}
-          onUpload={addVideo}
+          title="Upload Video Link"
+          fields={[
+            { name: "url", type: "text", placeholder: "Enter Video URL (x.com)", autoFocus: true },
+          ]}
+          onSave={addVideo}
+          onClose={() => setVideoModalOpen(false)}
+        />
+      )}
+      {isSocialLinkModalOpen && (
+        <UploadModal
+          title={`Edit ${editingPlatform} Link`}
+          fields={[
+            {
+              name: "url",
+              type: "text",
+              placeholder: `Enter your ${editingPlatform} URL`,
+              autoFocus: true,
+            },
+          ]}
+          initialData={{ url: socialLinks[editingPlatform] }}
+          onSave={(data) =>
+            updateSocialLink({ platform: editingPlatform, ...data })
+          }
+          onClose={() => setSocialLinkModalOpen(false)}
         />
       )}
       {isErrorModalOpen && (

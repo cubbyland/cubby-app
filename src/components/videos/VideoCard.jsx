@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/videos.css"; // Import the styles for videos
 
-const VideoCard = ({ title, url, description, onPin, onDelete }) => {
+const VideoCard = ({ title, url, description, onDelete }) => {
   const [isHovered, setIsHovered] = useState(false); // Hover state for card
   const [showConfirm, setShowConfirm] = useState(false); // State for delete confirmation modal
 
@@ -57,11 +57,6 @@ const VideoCard = ({ title, url, description, onPin, onDelete }) => {
           onClick={() => setShowConfirm(true)} // Show confirmation modal
         >
           Delete
-        </button>
-
-        {/* Pin Button */}
-        <button className="pin-button" onClick={onPin}>
-          Pin
         </button>
       </div>
     </div>

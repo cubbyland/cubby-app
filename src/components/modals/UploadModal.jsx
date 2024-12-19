@@ -2,24 +2,36 @@ import React, { useState } from "react";
 import "../../styles/modals.css"; // Import modal styles
 import "../../styles/forms.css"; // Import form styles
 
-const UploadModal = ({ onClose, onUpload }) => {
-  const [link, setLink] = useState("");
-  const [error, setError] = useState(""); // State for error messages
+const UploadModal = ({ onClose, onSave, initialData = {}, fields, title }) => {
+  const [formData, setFormData] = useState(initialData);
+  const [error, setError] = useState("");
 
-  // Validation function to check if the link is valid
-  const isValidLink = (link) => {
-    return link.trim() !== "" && link.startsWith("https://x.com/");
+  // Validation function for inputs (if needed for specific fields)
+  const isValidField = (value, fieldName) => {
+    if (fieldName === "url") {
+      return value.trim() !== "" && value.startsWith("https://");
+    }
+    return value.trim() !== "";
   };
 
-  // Handle upload logic with validation
-  const handleUpload = () => {
-    if (isValidLink(link)) {
-      onUpload(link); // Call the upload function passed as a prop
-      setLink(""); // Clear the input field after upload
+  // Handle input change
+  const handleInputChange = (e, fieldName) => {
+    setFormData({ ...formData, [fieldName]: e.target.value });
+  };
+
+  // Handle saving data
+  const handleSave = () => {
+    const invalidField = fields.find(
+      (field) => !isValidField(formData[field.name] || "", field.name)
+    );
+
+    if (invalidField) {
+      setError(`Please enter a valid ${invalidField.placeholder.toLowerCase()}.`);
+    } else {
+      onSave(formData); // Call the save function passed as a prop
+      setFormData({}); // Clear the form data after saving
       setError(""); // Clear any previous error message
       onClose(); // Close the modal
-    } else {
-      setError("Please enter a valid X.com link."); // Show an error message
     }
   };
 
@@ -27,32 +39,35 @@ const UploadModal = ({ onClose, onUpload }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent default form submission
-      handleUpload(); // Reuse the same logic for upload
+      handleSave(); // Reuse the save logic
     }
   };
 
   return (
     <div className="modal-container">
-      <h2 className="modal-title">Upload Video Link</h2>
+      <h2 className="modal-title">{title}</h2>
 
-      {/* Input field for video link */}
-      <input
-        type="text"
-        placeholder="Enter Video URL (x.com)"
-        value={link}
-        onChange={(e) => setLink(e.target.value)}
-        onKeyDown={handleKeyDown}
-        autoFocus
-        className="modal-input"
-      />
+      {/* Dynamic input fields */}
+      {fields.map((field) => (
+        <input
+          key={field.name}
+          type={field.type}
+          placeholder={field.placeholder}
+          value={formData[field.name] || ""}
+          onChange={(e) => handleInputChange(e, field.name)}
+          onKeyDown={handleKeyDown}
+          autoFocus={field.autoFocus || false}
+          className="modal-input"
+        />
+      ))}
 
-      {/* Error message for invalid link */}
+      {/* Error message */}
       {error && <div className="modal-error">{error}</div>}
 
       {/* Buttons */}
       <div className="modal-buttons">
-        <button className="upload-button" onClick={handleUpload}>
-          Upload
+        <button className="upload-button" onClick={handleSave}>
+          Save
         </button>
         <button className="close-button" onClick={onClose}>
           Close

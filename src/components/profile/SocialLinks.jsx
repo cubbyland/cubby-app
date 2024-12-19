@@ -1,27 +1,30 @@
 import React from "react";
 import "../../styles/forms.css";
 
-const SocialLinks = ({ socialLinks, onSocialLinkChange }) => {
+const SocialLinks = ({ socialLinks, onEditSocialLink }) => {
   return (
     <div className="social-links-section">
       {Object.keys(socialLinks).map((platform) => (
         <div key={platform} className="social-link">
-          <input
-            type="text"
-            placeholder={`Enter your ${platform} link`}
-            value={socialLinks[platform]}
-            onChange={(e) => onSocialLinkChange(platform, e.target.value)}
-          />
-          {socialLinks[platform] && (
+          <span className="social-platform">{platform}:</span>
+          {socialLinks[platform] ? (
             <a
               href={socialLinks[platform]}
               target="_blank"
               rel="noopener noreferrer"
               className={`social-icon ${platform}`}
             >
-              {platform}
+              {socialLinks[platform]}
             </a>
+          ) : (
+            <span className="social-placeholder">No link added</span>
           )}
+          <button
+            className="edit-link-button"
+            onClick={() => onEditSocialLink(platform)}
+          >
+            Edit
+          </button>
         </div>
       ))}
     </div>
