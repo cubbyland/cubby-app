@@ -10,6 +10,13 @@ const AppContainer = () => {
   const [videos, setVideos] = useState([
     { id: 1, title: "Sample Video 1", url: "https://example.com/video1" },
     { id: 2, title: "Sample Video 2", url: "https://example.com/video2" },
+    { id: 3, title: "Sample Video 3", url: "https://example.com/video3" },
+    { id: 4, title: "Sample Video 4", url: "https://example.com/video4" },
+    { id: 5, title: "Sample Video 5", url: "https://example.com/video5" },
+    { id: 6, title: "Sample Video 6", url: "https://example.com/video6" },
+    { id: 7, title: "Sample Video 7", url: "https://example.com/video7" },
+    { id: 8, title: "Sample Video 8", url: "https://example.com/video8" },
+    { id: 9, title: "Sample Video 9", url: "https://example.com/video9" },
   ]);
   const [bio, setBio] = useState("");
   const [socialLinks, setSocialLinks] = useState({
@@ -37,6 +44,11 @@ const AppContainer = () => {
   // Delete a video
   const handleDeleteVideo = (id) => {
     setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
+  };
+
+  // Reorder videos after drag and drop
+  const reorderVideos = (newOrder) => {
+    setVideos(newOrder);
   };
 
   // Update social link for a platform
@@ -78,7 +90,11 @@ const AppContainer = () => {
       </button>
 
       {/* Video List */}
-      <VideoList videos={videos} onDelete={handleDeleteVideo} />
+      <VideoList
+        videos={videos}
+        onDelete={handleDeleteVideo}
+        onReorder={reorderVideos}
+      />
 
       {/* Modals */}
       {isVideoModalOpen && (
