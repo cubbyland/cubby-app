@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import VideoList from "../components/videos/VideoList";
 import UploadModal from "../components/modals/UploadModal";
 import ErrorModal from "../components/modals/ErrorModal";
-import "../styles/global.css"; // Importing global styles
+import Bio from "../components/profile/Bio"; // Importing Bio component
+import SocialLinks from "../components/profile/SocialLinks"; // Importing SocialLinks component
+import "../styles/global.css";
 
 const AppContainer = () => {
   const [videos, setVideos] = useState([
     { id: 1, title: "Sample Video 1", url: "https://example.com/video1" },
     { id: 2, title: "Sample Video 2", url: "https://example.com/video2" },
   ]);
+  const [bio, setBio] = useState("Click to edit your bio...");
+  const [socialLinks, setSocialLinks] = useState({
+    twitter: "",
+    instagram: "",
+    reddit: "",
+    tiktok: "",
+  });
   const [isModalOpen, setModalOpen] = useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
 
@@ -35,9 +44,26 @@ const AppContainer = () => {
     ]);
   };
 
+  // Function to handle changes in social links
+  const handleSocialLinkChange = (platform, url) => {
+    setSocialLinks((prevLinks) => ({
+      ...prevLinks,
+      [platform]: url,
+    }));
+  };
+
   return (
     <div className="app-container">
       <h1 className="app-title">My Cubby Videos</h1>
+
+      {/* Bio Section */}
+      <Bio bio={bio} onBioChange={setBio} />
+
+      {/* Social Links Section */}
+      <SocialLinks
+        socialLinks={socialLinks}
+        onSocialLinkChange={handleSocialLinkChange}
+      />
 
       <button
         onClick={() =>
