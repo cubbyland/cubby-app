@@ -47,10 +47,7 @@ const AppContainer = () => {
   };
 
   // Reorder videos after drag and drop
-  const reorderVideos = ({ sourceIndex, destinationIndex }) => {
-    const reorderedVideos = Array.from(videos);
-    const [removed] = reorderedVideos.splice(sourceIndex, 1);
-    reorderedVideos.splice(destinationIndex, 0, removed);
+  const reorderVideos = (reorderedVideos) => {
     setVideos(reorderedVideos);
   };
 

@@ -1,55 +1,62 @@
-import React from "react";
-import { DragDropContext, Droppable, Draggable } from "@atlaskit/pragmatic-drag-and-drop";
+import React, { useEffect, useRef } from "react";
+import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import VideoCard from "./VideoCard";
 import "../../styles/videos.css";
 
+// Custom reorder function
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+};
+
 const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) => {
-  // Handler for drag-and-drop reordering
-  const handleDragEnd = ({ sourceIndex, destinationIndex }) => {
-    if (destinationIndex == null) return; // If dropped outside, do nothing
+  const containerRef = useRef(null);
 
-    const reorderedVideos = Array.from(videos);
-    const [removed] = reorderedVideos.splice(sourceIndex, 1);
-    reorderedVideos.splice(destinationIndex, 0, removed);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    if (typeof onReorder === "function") {
-      onReorder(reorderedVideos);
-    } else {
-      console.error("onReorder is not a function!");
-    }
-  };
+    const cleanupDraggables = videos.map((video, index) => {
+      const element = container.querySelector(`[data-video-id="${video.id}"]`);
+      if (!element) return null;
+
+      return draggable({
+        element,
+        getInitialData: () => ({ id: video.id, index }),
+      });
+    }).filter(Boolean);
+
+    const cleanupDropTarget = dropTargetForElements({
+      element: container,
+      onDrop: ({ source, destination }) => {
+        if (!destination) return;
+
+        const reorderedVideos = reorder(videos, source.data.index, destination.index);
+        onReorder(reorderedVideos);
+      },
+    });
+
+    return () => {
+      cleanupDraggables.forEach(cleanup => cleanup && cleanup());
+      cleanupDropTarget();
+    };
+  }, [videos, onReorder]);
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable type="VIDEO" droppableId="video-list">
-        {({ innerRef, droppableProps }) => (
-          <div
-            className="video-list-container"
-            {...droppableProps}
-            ref={innerRef}
-          >
-            {videos.map((video, index) => (
-              <Draggable key={video.id} draggableId={String(video.id)} index={index}>
-                {({ innerRef, draggableProps, dragHandleProps }) => (
-                  <div
-                    ref={innerRef}
-                    {...draggableProps}
-                    {...dragHandleProps}
-                  >
-                    <VideoCard
-                      title={video.title}
-                      url={video.url}
-                      description={video.description || "No description available"}
-                      onDelete={() => onDelete(video.id)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <div ref={containerRef} className="video-list-container">
+      {videos.map((video) => (
+        <div key={video.id} data-video-id={video.id} className="video-card-container">
+          <VideoCard
+            title={video.title}
+            url={video.url}
+            description={video.description || "No description available"}
+            onDelete={() => onDelete(video.id)}
+          />
+        </div>
+      ))}
+    </div>
   );
 };
 
