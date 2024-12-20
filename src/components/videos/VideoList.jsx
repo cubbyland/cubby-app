@@ -1,16 +1,16 @@
 import React from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "@atlaskit/pragmatic-drag-and-drop";
 import VideoCard from "./VideoCard";
 import "../../styles/videos.css";
 
 const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) => {
   // Handler for drag-and-drop reordering
-  const handleDragEnd = (result) => {
-    if (!result.destination) return; // If dropped outside, do nothing
+  const handleDragEnd = ({ sourceIndex, destinationIndex }) => {
+    if (destinationIndex == null) return; // If dropped outside, do nothing
 
     const reorderedVideos = Array.from(videos);
-    const [removed] = reorderedVideos.splice(result.source.index, 1);
-    reorderedVideos.splice(result.destination.index, 0, removed);
+    const [removed] = reorderedVideos.splice(sourceIndex, 1);
+    reorderedVideos.splice(destinationIndex, 0, removed);
 
     if (typeof onReorder === "function") {
       onReorder(reorderedVideos);
@@ -21,20 +21,20 @@ const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) =
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="video-list" direction="vertical">
-        {(provided) => (
+      <Droppable type="VIDEO" droppableId="video-list">
+        {({ innerRef, droppableProps }) => (
           <div
             className="video-list-container"
-            {...provided.droppableProps}
-            ref={provided.innerRef}
+            {...droppableProps}
+            ref={innerRef}
           >
             {videos.map((video, index) => (
               <Draggable key={video.id} draggableId={String(video.id)} index={index}>
-                {(provided) => (
+                {({ innerRef, draggableProps, dragHandleProps }) => (
                   <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
+                    ref={innerRef}
+                    {...draggableProps}
+                    {...dragHandleProps}
                   >
                     <VideoCard
                       title={video.title}
@@ -46,7 +46,6 @@ const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) =
                 )}
               </Draggable>
             ))}
-            {provided.placeholder}
           </div>
         )}
       </Droppable>
