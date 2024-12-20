@@ -32,7 +32,7 @@ const AppContainer = () => {
 
   // Add a new video
   const addVideo = (data) => {
-    const { url } = data; // Destructure URL from the modal data
+    const { url } = data;
     if (videos.length >= 10) {
       setErrorModalOpen(true);
       return;

@@ -3,7 +3,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import VideoCard from "./VideoCard";
 import "../../styles/videos.css";
 
-const VideoList = ({ videos, onDelete, onReorder }) => {
+const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) => {
   // Handler for drag-and-drop reordering
   const handleDragEnd = (result) => {
     if (!result.destination) return; // If dropped outside, do nothing
