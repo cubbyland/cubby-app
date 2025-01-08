@@ -18,6 +18,7 @@ const AppContainer = () => {
     { id: 8, title: "Sample Video 8", url: "https://example.com/video8" },
     { id: 9, title: "Sample Video 9", url: "https://example.com/video9" },
   ]);
+
   const [bio, setBio] = useState("");
   const [socialLinks, setSocialLinks] = useState({
     twitter: "",
@@ -48,6 +49,7 @@ const AppContainer = () => {
 
   // Reorder videos after drag and drop
   const reorderVideos = (reorderedVideos) => {
+    console.log("Reordered Videos:", reorderedVideos); // Debugging
     setVideos(reorderedVideos);
   };
 

@@ -9,6 +9,16 @@
   padding: 10px;
 }
 
+/* Placeholder for drag-and-drop */
+.video-list-container .drag-placeholder {
+  height: 150px;
+  background-color: #f0f8ff;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+
 /* ============================
    Video Card Styles
 ============================ */
@@ -22,6 +32,7 @@
   text-align: center;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   cursor: grab; /* Add grab cursor to indicate draggable */
+  will-change: transform;
 }
 
 .video-card:hover {
@@ -81,11 +92,15 @@
   background-color: #e64a19;
 }
 
+.delete-button:focus {
+  outline: 2px solid #007bff;
+}
+
 /* ============================
    Drag-and-Drop Placeholder
 ============================ */
 .drag-placeholder {
-  background-color: #f0f8ff;
+  background-color: #e6f7ff;
   border: 2px dashed #007bff;
   border-radius: 8px;
   width: 250px;
@@ -96,22 +111,52 @@
   font-size: 14px;
   color: #007bff;
   text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.drag-placeholder.highlight {
+  background-color: #cce7ff;
+  border-color: #0056b3;
 }
 
 /* ============================
    Dragging State
 ============================ */
 .dragging {
-  opacity: 0.5; /* Dim the dragged element for better feedback */
+  opacity: 0.7; /* Dim the dragged element for better feedback */
   transform: scale(0.95); /* Slightly shrink the dragged item */
   transition: transform 0.2s ease, opacity 0.2s ease;
+  z-index: 10; /* Ensure dragged item is on top */
+}
+
+/* ============================
+   Responsive Design
+============================ */
+@media (max-width: 768px) {
+  .video-card {
+    width: 200px;
+    padding: 10px;
+  }
+
+  .video-title {
+    font-size: 14px;
+  }
+
+  .video-description {
+    font-size: 12px;
+  }
+
+  .delete-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
 }
 
 /* ============================
    Confirmation Modal Styles
 ============================ */
 .confirmation-modal {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -120,7 +165,7 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+  z-index: 1000;
   text-align: center;
 }
 

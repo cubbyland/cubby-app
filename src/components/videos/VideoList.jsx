@@ -25,23 +25,34 @@ const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) =
     }
 
     // Initialize draggable elements
-    const cleanupDraggables = videos.map((video, index) => {
-      const element = container.querySelector(`[data-video-id="${video.id}"]`);
-      if (!element) {
-        console.error(`Element not found for video ID: ${video.id}`);
-        return null;
-      }
+    const cleanupDraggables = videos
+      .map((video, index) => {
+        const element = container.querySelector(`[data-video-id="${video.id}"]`);
+        if (!element) {
+          console.error(`Element not found for video ID: ${video.id}`);
+          return null;
+        }
 
-      return draggable({
-        element,
-        getInitialData: () => ({ id: video.id, index }),
-      });
-    }).filter(Boolean);
+        return draggable({
+          element,
+          getInitialData: () => ({ id: video.id, index }),
+        });
+      })
+      .filter(Boolean);
 
     // Initialize drop target
     const cleanupDropTarget = dropTargetForElements({
       element: container,
+      onDragOver: (event) => {
+        // Required to allow dropping
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move"; // Set drop effect
+      },
       onDrop: ({ source, destination }) => {
+        // Debug source and destination
+        console.log("Source:", source);
+        console.log("Destination:", destination);
+
         // Validate source and destination
         if (!source || !destination) {
           console.error("Invalid drop event. Source or destination missing.");
@@ -64,7 +75,7 @@ const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) =
           return;
         }
 
-        // Ensure indices are not equal
+        // Prevent reordering if indices are the same
         if (sourceIndex === destinationIndex) {
           console.warn("No reordering necessary. Source and destination are the same.");
           return;
@@ -90,7 +101,14 @@ const VideoList = ({ videos = [], onDelete = () => {}, onReorder = () => {} }) =
   }, [videos, onReorder]);
 
   return (
-    <div ref={containerRef} className="video-list-container">
+    <div
+      ref={containerRef}
+      className="video-list-container"
+      onDragOver={(event) => {
+        event.preventDefault(); // Prevent default to allow dropping
+        event.dataTransfer.dropEffect = "move"; // Ensure correct cursor feedback
+      }}
+    >
       {videos.map((video) => (
         <div
           key={video.id}
