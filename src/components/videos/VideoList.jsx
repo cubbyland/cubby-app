@@ -1,75 +1,65 @@
-import React, { useEffect, useRef } from "react";
-import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import React, { useRef } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { arrayMoveItem } from '@dnd-kit/utilities';
+import { DndContext, closestCenter, Draggable, Droppable } from '@dnd-kit/drag-and-drop'; 
 import VideoCard from "./VideoCard";
 import "../../styles/videos.css";
-
-// Utility function to reorder the list
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result;
-};
 
 const VideoList = ({ videos, onDelete, onReorder }) => {
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const container = containerRef.current;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transition,
+  } = useSortable({
+    id: 'video-list',
+    items: videos.map((video) => ({ id: video.id })),
+    onSortEnd: ({ oldIndex, newIndex }) => {
+      onReorder(arrayMoveItem(videos, oldIndex, newIndex)); 
+    },
+  });
 
-    if (!container) {
-      console.error("Container not found.");
-      return;
-    }
-
-    const draggables = Array.from(container.children).map((element, index) =>
-      draggable({
-        element,
-        getInitialData: () => ({
-          id: videos[index].id,
-          index,
-        }),
-      })
-    );
-
-    const dropTarget = dropTargetForElements({
-      element: container,
-      onDragOver: (event) => {
-        event.preventDefault();
-      },
-      onDrop: (event) => {
-        const { source, location } = event;
-        if (!source || !location) return;
-
-        const sourceIndex = source.data.index;
-        const destinationIndex = Array.from(container.children).indexOf(location.element);
-
-        if (sourceIndex !== destinationIndex && destinationIndex >= 0) {
-          const reorderedVideos = reorder(videos, sourceIndex, destinationIndex);
-          onReorder(reorderedVideos); // Notify the parent about the new order
-        }
-      },
-    });
-
-    return () => {
-      draggables.forEach((cleanup) => cleanup && cleanup());
-      dropTarget();
-    };
-  }, [videos, onReorder]);
+  const handleContainerRef = (el) => {
+    provided.ref(el);
+    setNodeRef(el);
+  };
 
   return (
-    <div ref={containerRef} className="video-list-container">
-      {videos.map((video, index) => (
-        <div key={video.id} data-index={index}>
-          <VideoCard
-            title={video.title}
-            url={video.url}
-            description={video.description || "No description available"}
-            onDelete={() => onDelete(video.id)}
-          />
-        </div>
-      ))}
-    </div>
+    <DndContext collisionDetection={closestCenter}>
+      <Droppable id="video-list" data={{}} >
+        {(provided) => (
+          <div 
+            ref={handleContainerRef} 
+            style={transition} 
+            className="video-list-container"
+          >
+            {videos.map((video, index) => (
+              <Draggable key={video.id} id={video.id}>
+                {(provided) => (
+                  <div 
+                    ref={provided.ref} 
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps} 
+                    style={provided.draggableProps.style} 
+                    className="video-card"
+                  >
+                    <VideoCard 
+                      title={video.title} 
+                      url={video.url} 
+                      description={video.description || "No description available"} 
+                      onDelete={() => onDelete(video.id)} 
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DndContext>
   );
 };
 
