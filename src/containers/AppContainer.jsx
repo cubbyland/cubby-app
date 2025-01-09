@@ -31,29 +31,27 @@ const AppContainer = () => {
   const [isSocialLinkModalOpen, setSocialLinkModalOpen] = useState(false);
   const [editingPlatform, setEditingPlatform] = useState(null);
 
-  // Add a new video
+  // Function to add a new video
   const addVideo = (data) => {
-    const { url } = data;
     if (videos.length >= 10) {
       setErrorModalOpen(true);
       return;
     }
-    const newVideo = { id: Date.now(), title: "New Video", url };
-    setVideos((prevVideos) => [...prevVideos, newVideo]);
+    const newVideo = { id: Date.now(), title: "New Video", url: data.url };
+    setVideos((prev) => [...prev, newVideo]);
   };
 
-  // Delete a video
+  // Function to delete a video
   const handleDeleteVideo = (id) => {
-    setVideos((prevVideos) => prevVideos.filter((video) => video.id !== id));
+    setVideos((prev) => prev.filter((video) => video.id !== id));
   };
 
-  // Reorder videos after drag and drop
+  // Function to reorder videos
   const reorderVideos = (reorderedVideos) => {
-    console.log("Reordered Videos:", reorderedVideos); // Debugging
-    setVideos(reorderedVideos);
+    setVideos([...reorderedVideos]);
   };
 
-  // Update social link for a platform
+  // Function to update social link for a platform
   const updateSocialLink = (data) => {
     const { platform, url } = data;
     setSocialLinks((prevLinks) => ({
@@ -64,7 +62,7 @@ const AppContainer = () => {
     setEditingPlatform(null);
   };
 
-  // Open modal for editing a specific social link
+  // Function to open modal for editing a specific social link
   const editSocialLink = (platform) => {
     setEditingPlatform(platform);
     setSocialLinkModalOpen(true);
@@ -103,12 +101,18 @@ const AppContainer = () => {
         <UploadModal
           title="Upload Video Link"
           fields={[
-            { name: "url", type: "text", placeholder: "Enter Video URL (x.com)", autoFocus: true },
+            {
+              name: "url",
+              type: "text",
+              placeholder: "Enter Video URL (x.com)",
+              autoFocus: true,
+            },
           ]}
           onSave={addVideo}
           onClose={() => setVideoModalOpen(false)}
         />
       )}
+
       {isSocialLinkModalOpen && (
         <UploadModal
           title={`Edit ${editingPlatform} Link`}
@@ -127,6 +131,7 @@ const AppContainer = () => {
           onClose={() => setSocialLinkModalOpen(false)}
         />
       )}
+
       {isErrorModalOpen && (
         <ErrorModal
           onClose={() => setErrorModalOpen(false)}
