@@ -2,11 +2,11 @@
    Video List Styles
 ============================ */
 .video-list-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
   padding: 10px;
+  justify-items: center;
 }
 
 /* Placeholder for drag-and-drop */
@@ -18,21 +18,21 @@
   margin: 10px 0;
 }
 
-
 /* ============================
    Video Card Styles
 ============================ */
 .video-card {
   width: 250px;
   background-color: white;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 15px;
+  padding: 16px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow 0.15s ease, transform 0.1s ease; /* Faster transition */
   cursor: grab; /* Add grab cursor to indicate draggable */
   will-change: transform;
+  position: relative; /* Ensure proper placement of buttons */
 }
 
 .video-card:hover {
@@ -42,7 +42,8 @@
 
 .video-card:active {
   cursor: grabbing; /* Change cursor to grabbing when active */
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+  transform: scale(1.03); 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .video-title {
@@ -55,30 +56,30 @@
 .video-description {
   font-size: 14px;
   color: #666;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
-.video-link {
+.watch-video-link {
+  display: block; /* Ensure link is separate */
+  margin-bottom: 15px; /* Spacing between link and delete button */
+  font-size: 14px;
   color: #007bff;
   text-decoration: underline;
-  font-size: 14px;
+  transition: color 0.2s ease;
 }
 
-.video-link:hover {
+.watch-video-link:hover {
   color: #0056b3;
 }
 
 /* ============================
    Video Buttons
 ============================ */
-.video-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
 .delete-button {
-  padding: 8px 15px;
+  display: block;
+  width: 100%; /* Full width button */
+  margin-top: auto; /* Push to the bottom of the card */
+  padding: 10px;
   border-radius: 4px;
   color: white;
   border: none;
@@ -93,7 +94,7 @@
 }
 
 .delete-button:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid #ff5722;
 }
 
 /* ============================
@@ -111,7 +112,7 @@
   font-size: 14px;
   color: #007bff;
   text-align: center;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .drag-placeholder.highlight {
@@ -123,9 +124,9 @@
    Dragging State
 ============================ */
 .dragging {
-  opacity: 0.7; /* Dim the dragged element for better feedback */
-  transform: scale(0.95); /* Slightly shrink the dragged item */
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.85; /* Dim the dragged element slightly */
+  transform: scale(1.02); /* Slightly enlarge the dragged item */
+  transition: transform 0.25s ease, opacity 0.15s ease; /* Faster transition for dragging */
   z-index: 10; /* Ensure dragged item is on top */
 }
 
@@ -146,8 +147,12 @@
     font-size: 12px;
   }
 
+  .watch-video-link {
+    font-size: 12px;
+  }
+
   .delete-button {
-    padding: 6px 10px;
+    padding: 8px;
     font-size: 12px;
   }
 }
