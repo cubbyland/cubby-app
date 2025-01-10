@@ -32,7 +32,9 @@
   transition: box-shadow 0.15s ease, transform 0.1s ease; /* Faster transition */
   cursor: grab; /* Add grab cursor to indicate draggable */
   will-change: transform;
-  position: relative; /* Ensure proper placement of buttons */
+  display: flex;
+  flex-direction: column; /* Ensure vertical layout */
+  justify-content: space-between; /* Space between elements */
 }
 
 .video-card:hover {
@@ -60,12 +62,11 @@
 }
 
 .watch-video-link {
-  display: block; /* Ensure link is separate */
-  margin-bottom: 15px; /* Spacing between link and delete button */
   font-size: 14px;
   color: #007bff;
   text-decoration: underline;
   transition: color 0.2s ease;
+  margin-bottom: 15px; /* Add spacing between link and delete button */
 }
 
 .watch-video-link:hover {
@@ -76,7 +77,6 @@
    Video Buttons
 ============================ */
 .delete-button {
-  display: block;
   width: 100%; /* Full width button */
   margin-top: auto; /* Push to the bottom of the card */
   padding: 10px;

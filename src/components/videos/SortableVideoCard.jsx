@@ -3,13 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 const SortableVideoCard = ({ id, title, url, description, onDelete }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id,
-    transition: {
-      duration: 400, // Faster animation
-      easing: "ease-out",
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
