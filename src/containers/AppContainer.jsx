@@ -17,9 +17,9 @@ const AppContainer = () => {
     tiktok: "",
   });
   const [curationVideos, setCurationVideos] = useState([
-    { id: 1, title: "Sample Video 1", url: "https://example.com/video1" },
-    { id: 2, title: "Sample Video 2", url: "https://example.com/video2" },
-    { id: 3, title: "Sample Video 3", url: "https://example.com/video3" },
+    { id: "curation-1", title: "Sample Video 1", url: "https://example.com/video1" },
+    { id: "curation-2", title: "Sample Video 2", url: "https://example.com/video2" },
+    { id: "curation-3", title: "Sample Video 3", url: "https://example.com/video3" },
   ]);
   const [isVideoModalOpen, setVideoModalOpen] = useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
@@ -29,18 +29,19 @@ const AppContainer = () => {
       setErrorModalOpen(true);
       return;
     }
-    const newVideo = { id: Date.now(), title: "New Video", url: data.url };
+    const newVideo = { id: `curation-${Date.now()}`, title: "New Video", url: data.url };
     setCurationVideos((prev) => [...prev, newVideo]);
   };
 
   const deleteCurationVideo = (id) => {
-    console.log("Deleting Curation Video: ", id);
+    console.log("Deleting Curation Video with ID: ", id);
     setCurationVideos((prev) => {
       const updatedVideos = prev.filter((video) => video.id !== id);
       console.log("Updated Curation Videos: ", updatedVideos);
       return updatedVideos;
     });
-  };
+  };  
+  
   
 
   const reorderCurationVideos = (reorderedVideos) => {
@@ -65,9 +66,9 @@ const AppContainer = () => {
       </button>
       <VideoList
         videos={curationVideos}
-        onDelete={deleteCurationVideo}
+        onDelete={deleteCurationVideo} // Pass the delete function
         onReorder={reorderCurationVideos}
-        isSortable={true} // Curation videos are sortable
+        isSortable={true}
       />
 
       {isVideoModalOpen && (

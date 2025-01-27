@@ -17,9 +17,16 @@ const SortableVideoCard = ({ id, title, url, description, onDelete }) => {
       <a href={url} target="_blank" rel="noopener noreferrer" className="watch-video-link">
         Watch Video
       </a>
-      <button onClick={onDelete} className="delete-button">
-        Delete
+      <button
+        onClick={() => {
+            console.log("Delete Button Clicked for ID: ", id);
+            onDelete(); // Ensure this is passed correctly from `VideoList`
+        }}
+        className="delete-button"
+      >
+        Delete  
       </button>
+
     </div>
   );
 };

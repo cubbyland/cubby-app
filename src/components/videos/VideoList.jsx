@@ -10,17 +10,13 @@ const VideoList = ({ videos, onDelete, onReorder, isSortable = true }) => {
     if (!isSortable) return;
 
     const { active, over } = event;
-
     if (active && over && active.id !== over.id) {
-      console.log("Dragging Video: ", { activeId: active.id, overId: over.id });
-
       const oldIndex = videos.findIndex((video) => video.id === active.id);
       const newIndex = videos.findIndex((video) => video.id === over.id);
 
       if (oldIndex !== -1 && newIndex !== -1) {
         const updatedVideos = arrayMove(videos, oldIndex, newIndex);
-        console.log("Updated Video Order: ", updatedVideos);
-        onReorder(updatedVideos); // Call the reorder function with the updated list
+        onReorder(updatedVideos);
       }
     }
   };
@@ -37,10 +33,7 @@ const VideoList = ({ videos, onDelete, onReorder, isSortable = true }) => {
                 title={video.title}
                 url={video.url}
                 description={video.description || "No description available"}
-                onDelete={() => {
-                  console.log("Delete Triggered for Video ID (Sortable): ", video.id);
-                  onDelete(video.id);
-                }}
+                onDelete={() => onDelete(video.id)}
               />
             ))}
           </SortableContext>
@@ -52,10 +45,7 @@ const VideoList = ({ videos, onDelete, onReorder, isSortable = true }) => {
             title={video.title}
             url={video.url}
             description={video.description || "No description available"}
-            onDelete={() => {
-              console.log("Delete Triggered for Video ID (Non-Sortable): ", video.id);
-              onDelete(video.id);
-            }}
+            onDelete={() => onDelete(video.id)}
           />
         ))
       )}
