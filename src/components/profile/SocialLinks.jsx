@@ -1,32 +1,32 @@
 import React from "react";
 import "../../styles/forms.css";
 
-const SocialLinks = ({ socialLinks, onEditSocialLink }) => {
+const SocialLinks = ({ links = [], onAdd, onUpdate }) => {
   return (
-    <div className="social-links-section">
-      {Object.keys(socialLinks).map((platform) => (
-        <div key={platform} className="social-link">
-          <span className="social-platform">{platform}:</span>
-          {socialLinks[platform] ? (
-            <a
-              href={socialLinks[platform]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`social-icon ${platform}`}
-            >
-              {socialLinks[platform]}
-            </a>
-          ) : (
-            <span className="social-placeholder">No link added</span>
-          )}
+    <div className="social-links-editor">
+      {links.map((link, index) => (
+        <div key={index} className="social-link-input">
+          <input
+            placeholder="Platform (e.g. Twitter)"
+            value={link.platform}
+            onChange={(e) => onUpdate(index, 'platform', e.target.value)}
+          />
+          <input
+            placeholder="Profile URL"
+            value={link.url}
+            onChange={(e) => onUpdate(index, 'url', e.target.value)}
+          />
           <button
-            className="edit-link-button"
-            onClick={() => onEditSocialLink(platform)}
+            className="remove-link"
+            onClick={() => onUpdate(index, 'remove')}
           >
-            Edit
+            ×
           </button>
         </div>
       ))}
+      <button className="add-link-button" onClick={onAdd}>
+        + Add Social Link
+      </button>
     </div>
   );
 };

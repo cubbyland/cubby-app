@@ -16,10 +16,4 @@ export const VideoProvider = ({ children }) => {
   );
 };
 
-export const useVideoContext = () => {
-  const context = useContext(VideoContext);
-  if (!context) {
-    throw new Error('useVideoContext must be used within a VideoProvider');
-  }
-  return context;
-};
+export const useVideoContext = () => useContext(VideoContext);
