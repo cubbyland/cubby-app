@@ -193,3 +193,164 @@
     background-color: #5a6268;
   }
   
+  /* Upload Modal Hashtags */
+  .hashtag-section {
+    margin: 1rem 0;
+  }
+  
+  .hashtag-input {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  
+  .selected-hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .hashtag {
+    background: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .hashtag button {
+    background: none;
+    border: none;
+    margin-left: 4px;
+    cursor: pointer;
+    color: #64748b;
+  }
+  
+  .error-message {
+    color: #dc2626;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #fee2e2;
+    border-radius: 4px;
+  }
+  
+  /* X Embed Styling */
+  .x-embed {
+    margin: 1rem 0;
+    max-width: 550px;
+  }
+  
+  .replacement-interface {
+    border: 1px solid #ffd700;
+    padding: 1rem;
+    margin: 1rem 0;
+    background: #fffce5;
+  }
+  
+  .replacement-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+  
+  .replacement-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+  
+  .replacement-item.selected {
+    background: #e3f2fd;
+    border-color: #2196f3;
+  }
+  
+  /* Add specific styling for X posts */
+  .x-post-preview {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f5f8fa;
+    border-radius: 4px;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  /* Make X URL input prominent */
+  .x-url-section {
+    margin: 2rem 0;
+  }
+  
+  .x-url-input {
+    border: 2px solid #1da1f2;
+    padding: 12px;
+    font-size: 1rem;
+  }
+  
+  .input-note {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 8px;
+    display: block;
+  }
+  
+  .upload-modal h3 {
+    color: #1da1f2;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  /* Modal Overlay */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Modal Container */
+  .upload-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Add this to ensure modal stays on top */
+  .upload-modal * {
+    position: static !important;
+  }
+  
+  /* Error Styling */
+  .error {
+    border-color: #ff4444 !important;
+  }
+  
+  .error-message {
+    color: #ff4444;
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+  
+  .x-url-input {
+    border: 2px solid #1da1f2;
+    /* Keep existing styles */
+  }
+  

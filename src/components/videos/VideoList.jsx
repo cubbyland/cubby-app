@@ -1,11 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import SortableVideoCard from "./SortableVideoCard";
 import VideoCard from "./VideoCard";
 import "../../styles/videos.css";
 
-const VideoList = ({ videos, onDelete, onReorder, isSortable = true }) => {
+const VideoList = ({ videos, onDelete, onReorder, isSortable = true, isLoading, hasActiveSearch }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let attempt = 0;
+    const loadWidgets = () => {
+      if (window.twttr?.widgets) {
+        window.twttr.widgets.load();
+      } else if (attempt < 3) {
+        attempt++;
+        setTimeout(loadWidgets, 500);
+      }
+    };
+    
+    loadWidgets();
+  }, [videos]);
+
+  useEffect(() => {
+    if (window.twttr && !isLoading) {
+      window.twttr.widgets.load();
+    }
+  }, [videos, isLoading]);
+
+  if (loading) return <div>Loading posts...</div>;
+
   const handleDragEnd = (event) => {
     if (!isSortable) return;
 
@@ -21,34 +45,23 @@ const VideoList = ({ videos, onDelete, onReorder, isSortable = true }) => {
     }
   };
 
-  return (
-    <div className="video-list-container">
-      {isSortable ? (
-        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={videos.map((video) => video.id)} strategy={rectSortingStrategy}>
-            {videos.map((video) => (
-              <SortableVideoCard
-                key={video.id}
-                id={video.id}
-                title={video.title}
-                url={video.url}
-                description={video.description || "No description available"}
-                onDelete={() => onDelete(video.id)}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
-      ) : (
-        videos.map((video) => (
-          <VideoCard
-            key={video.id}
-            title={video.title}
-            url={video.url}
-            description={video.description || "No description available"}
-            onDelete={() => onDelete(video.id)}
-          />
-        ))
-      )}
+  console.log('Rendering videos:', videos);
+
+  if (!hasActiveSearch) return null; // Render nothing when no hashtags
+
+  return isLoading ? (
+    <div className="loading">Loading posts...</div>
+  ) : (
+    <div className="video-list">
+      {videos.map(video => (
+        <div key={video.id} className="video-item">
+          {video.isXPost && (
+            <blockquote className="twitter-tweet">
+              <a href={video.url}></a>
+            </blockquote>
+          )}
+        </div>
+      ))}
     </div>
   );
 };

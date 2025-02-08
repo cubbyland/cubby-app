@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDom from 'react-dom/client';
 import { Routes, Route } from "react-router-dom";
 import VideoList from "../components/videos/VideoList";
@@ -13,6 +13,7 @@ import "../styles/global.css";
 import NavBar from '../components/navigation/NavBar';
 import FavoriteCubbies from '../components/cubby/FavoriteCubbies';
 import SearchBar from '../components/cubby/SearchBar';
+import { api } from '../api/client';
 
 const AppContainer = () => {
   // Profile Section State
@@ -25,32 +26,83 @@ const AppContainer = () => {
   });
 
   // Cubby Section State (ONLY DECLARE ONCE)
-  const [curationVideos, setCurationVideos] = useState([
-    {
-      id: 1,
-      title: "Cute Cat Video",
-      url: "https://example.com/cat.mp4",
-      hashtags: ['favorites', 'cats']
-    },
-    {
-      id: 2,
-      title: "Funny Dog Compilation",
-      url: "https://example.com/dog.mp4", 
-      hashtags: ['favorites', 'dogs']
+  const [curationVideos, setCurationVideos] = useState([]);
+  const [hashtags, setHashtags] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Add initial loaded state
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  // Proper initial state
+  const [searchHashtags, setSearchHashtags] = useState([]);
+
+  // Direct state control
+  const handleHashtagUpdate = (newHashtags) => {
+    setSearchHashtags(newHashtags);
+    setIsLoading(newHashtags.length > 0); // Immediate state sync
+    if (newHashtags.length === 0) {
+      setCurationVideos([]);
     }
-  ]);
+  };
+
+  // Modify useEffect
+  useEffect(() => {
+    if (searchHashtags.length === 0) return;
+
+    let isMounted = true;
+    setIsLoading(true);
+    
+    api.getPosts(searchHashtags)
+      .then(posts => {
+        if (isMounted) setCurationVideos(posts);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => { isMounted = false };
+  }, [searchHashtags]);
+
   const [isVideoModalOpen, setVideoModalOpen] = useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
 
-  // Add search state
-  const [searchHashtags, setSearchHashtags] = useState(['#favorites']);
-
   // Filter videos based on hashtags
-  const filteredVideos = curationVideos.filter(video => 
-    searchHashtags.every(tag => 
-      video.hashtags?.includes(tag.replace('#', ''))
-    )
-  );
+  const filteredVideos = searchHashtags.length > 0 
+    ? curationVideos.filter(video => 
+        searchHashtags.every(searchTag =>
+          video.hashtags.some(videoTag =>
+            videoTag.toLowerCase() === searchTag.toLowerCase()
+          )
+        )
+      )
+    : [];
+
+  // Add validation function
+  const validateHashtagLimits = (newVideo) => {
+    const hashtagCounts = {};
+    
+    curationVideos.forEach(video => {
+      video.hashtags.forEach(tag => {
+        if (tag !== '#favorites') {
+          hashtagCounts[tag] = (hashtagCounts[tag] || 0) + 1;
+        }
+      });
+    });
+
+    return newVideo.hashtags.every(tag => 
+      tag === '#favorites' || 
+      (hashtagCounts[tag] || 0) < 3
+    );
+  };
+
+  // Update upload handler
+  const handleVideoUpload = async (newVideo) => {
+    const result = await api.savePost(newVideo);
+    if (result.success) {
+      setCurationVideos(prev => [...prev, newVideo]);
+    }
+  };
 
   const addCurationVideo = (data) => {
     if (curationVideos.length >= 10) {
@@ -58,7 +110,7 @@ const AppContainer = () => {
       return;
     }
     const newVideo = { id: `curation-${Date.now()}`, title: "New Video", url: data.url };
-    setCurationVideos((prev) => [...prev, newVideo]);
+    handleVideoUpload(newVideo);
   };
 
   const deleteCurationVideo = (id) => {
@@ -97,6 +149,19 @@ const AppContainer = () => {
         return { ...prev, socialLinks: updatedLinks };
       });
     }
+  };
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  
+  const handleSavePost = (newPost) => {
+    setCurationVideos(prev => [...prev, newPost]);
+  };
+
+  // Add clear button handler
+  const handleClearSearch = () => {
+    setSearchHashtags([]);
+    setCurationVideos([]);
+    setIsLoading(false);
   };
 
   return (
@@ -148,7 +213,7 @@ const AppContainer = () => {
             <Achievements />
             <button 
               className="add-video-button"
-              onClick={() => setVideoModalOpen(true)}
+              onClick={() => setIsUploadModalOpen(true)}
             >
               Upload Video
             </button>
@@ -166,18 +231,12 @@ const AppContainer = () => {
                   initialTags={['#favorites']}
                 />
                 
-                {filteredVideos.length === 0 ? (
-                  <div className="empty-cubby">
-                    <p>No posts match {searchHashtags.join(' ')}</p>
-                  </div>
-                ) : (
-                  <VideoList
+                <div className="curation-interface">
+                  <VideoList 
                     videos={filteredVideos}
-                    onDelete={deleteCurationVideo}
-                    onReorder={reorderCurationVideos}
-                    isSortable={true}
+                    isLoading={isLoading && searchHashtags.length > 0}
                   />
-                )}
+                </div>
               </div>
 
               <FavoriteCubbies />
@@ -185,7 +244,7 @@ const AppContainer = () => {
 
             <button 
               className="add-video-button"
-              onClick={() => setVideoModalOpen(true)}
+              onClick={() => setIsUploadModalOpen(true)}
             >
               Upload Video
             </button>
@@ -237,7 +296,7 @@ const AppContainer = () => {
             <Achievements />
             <button 
               className="add-video-button"
-              onClick={() => setVideoModalOpen(true)}
+              onClick={() => setIsUploadModalOpen(true)}
             >
               Upload Video
             </button>
@@ -246,19 +305,10 @@ const AppContainer = () => {
       </Routes>
 
       {/* Modals */}
-      {isVideoModalOpen && (
+      {isUploadModalOpen && (
         <UploadModal
-          title="Upload Video Link"
-          fields={[
-            {
-              name: "url",
-              type: "text",
-              placeholder: "Enter Video URL (x.com)",
-              autoFocus: true,
-            },
-          ]}
-          onSave={addCurationVideo}
-          onClose={() => setVideoModalOpen(false)}
+          onClose={() => setIsUploadModalOpen(false)}
+          onSave={handleSavePost}
         />
       )}
       {isErrorModalOpen && (
