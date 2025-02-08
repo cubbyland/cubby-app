@@ -22,3 +22,5 @@ app.get('/api/tweets', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.use('/api/hashtags', require('./routes/hashtagRoutes'));
