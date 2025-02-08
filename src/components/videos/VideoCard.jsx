@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/videos.css";
+import HashtagPill from '../hashtags/HashtagPill';
 
 const VideoCard = ({ title, url, description, onDelete }) => {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -43,6 +44,10 @@ const VideoCard = ({ title, url, description, onDelete }) => {
       >
         Delete
       </button>
+
+      {video.hashtags.map(tag => (
+        <HashtagPill key={tag} tag={tag} size="small" />
+      ))}
     </div>
   );
 };

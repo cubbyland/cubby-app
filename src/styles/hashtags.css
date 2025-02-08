@@ -1,0 +1,25 @@
+.hashtag-input .tag-preview {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.hashtag-pill {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 999px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hashtag-input input.error {
+  border-color: #ef4444;
+}
+
+.error-message {
+  color: #ef4444;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
