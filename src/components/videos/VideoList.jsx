@@ -5,8 +5,8 @@ import SortableVideoCard from "./SortableVideoCard";
 import VideoCard from "./VideoCard";
 import "../../styles/videos.css";
 
-const VideoList = ({ videos, onDelete, onReorder, isSortable = true, isLoading, hasActiveSearch }) => {
-  const [loading, setLoading] = useState(true);
+const VideoList = ({ videos, isLoading, hasActiveSearch }) => {
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     let attempt = 0;
@@ -28,7 +28,12 @@ const VideoList = ({ videos, onDelete, onReorder, isSortable = true, isLoading, 
     }
   }, [videos, isLoading]);
 
-  if (loading) return <div>Loading posts...</div>;
+  useEffect(() => {
+    const shouldShow = hasActiveSearch && (isLoading || videos.length > 0);
+    setVisible(shouldShow);
+  }, [hasActiveSearch, isLoading, videos]);
+
+  if (!hasActiveSearch) return null;
 
   const handleDragEnd = (event) => {
     if (!isSortable) return;
@@ -47,23 +52,27 @@ const VideoList = ({ videos, onDelete, onReorder, isSortable = true, isLoading, 
 
   console.log('Rendering videos:', videos);
 
-  if (!hasActiveSearch) return null; // Render nothing when no hashtags
-
-  return isLoading ? (
-    <div className="loading">Loading posts...</div>
-  ) : (
+  return visible ? (
     <div className="video-list">
-      {videos.map(video => (
-        <div key={video.id} className="video-item">
-          {video.isXPost && (
-            <blockquote className="twitter-tweet">
-              <a href={video.url}></a>
-            </blockquote>
-          )}
+      {isLoading && <div className="loading">Loading posts...</div>}
+      {!isLoading && videos.length > 0 ? (
+        videos.map(video => (
+          <div key={video.id} className="video-item">
+            {video.isXPost && (
+              <blockquote className="twitter-tweet">
+                <a href={video.url}></a>
+              </blockquote>
+            )}
+          </div>
+        ))
+      ) : (
+        <div className="empty-state">
+          <h3>No posts found</h3>
+          <p>Try different hashtags or upload a new post</p>
         </div>
-      ))}
+      )}
     </div>
-  );
+  ) : null;
 };
 
 export default VideoList;

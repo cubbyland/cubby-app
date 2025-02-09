@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../styles/modals.css"; // Import modal styles
 import "../../styles/forms.css"; // Import form styles
 import PropTypes from 'prop-types';
+import api from "../../api/client";
 
 const UploadModal = ({ 
   onClose, 
@@ -9,13 +10,16 @@ const UploadModal = ({
   initialData = {}, 
   fields = [], 
   title = 'Upload Video', 
-  existingVideos = [] 
+  existingVideos = [],
+  selectedHashtags = [],
+  isXPost,
+  onSuccess
 }) => {
   const [formData, setFormData] = useState({
     ...initialData,
     hashtags: initialData.hashtags || [] // Initialize as empty array
   });
-  const [error, setError] = useState("");
+  const [error] = useState("");
   const [inputHashtag, setInputHashtag] = useState("");
   const [hashtagWarnings, setHashtagWarnings] = useState({});
   const [replacementMode, setReplacementMode] = useState(false);
@@ -28,20 +32,13 @@ const UploadModal = ({
     isXPost: false
   });
   const [errors, setErrors] = useState({});
+  const [isUploading, setIsUploading] = useState(false);
 
   // Add URL validation
   useEffect(() => {
     const isX = newPost.url.includes('twitter.com') || newPost.url.includes('x.com');
     setNewPost(prev => ({ ...prev, isXPost: isX }));
   }, [newPost.url]);
-
-  // Validation function for inputs (if needed for specific fields)
-  const isValidField = (value, fieldName) => {
-    if (fieldName === "url") {
-      return value.trim() !== "" && value.startsWith("https://");
-    }
-    return value.trim() !== "";
-  };
 
   // Handle input change
   const handleInputChange = (e, fieldName) => {
@@ -73,48 +70,84 @@ const UploadModal = ({
   const validateForm = () => {
     const newErrors = {};
     
-    console.log('Validating URL:', newPost.url);
-    console.log('Validating Title:', newPost.title);
-
-    // Auto-generate title from URL if empty
-    if (!newPost.title.trim()) {
-      const usernameMatch = newPost.url.match(/\/([^\/]+)\/status\/\d+/);
-      const autoTitle = usernameMatch 
-        ? `Post by @${usernameMatch[1]}`
-        : 'Social Media Post';
-      
-      setNewPost(prev => ({
-        ...prev,
-        title: autoTitle
-      }));
-    }
-
-    // URL validation remains
-    if (!newPost.url) {
+    if (!newPost.url.trim()) {
       newErrors.url = 'URL is required';
     } else if (!urlPattern.test(newPost.url)) {
       newErrors.url = 'Must be a valid X/Twitter post URL';
     }
 
-    console.log('Validation errors:', newErrors);
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
+  };
+
+  // Add this helper function
+  const checkForDuplicateHashtags = (hashtags) => {
+    const hashtagCounts = {};
+    const duplicates = [];
+    
+    hashtags.forEach(tag => {
+      const cleanTag = tag.replace(/#/g, '').toLowerCase();
+      hashtagCounts[cleanTag] = (hashtagCounts[cleanTag] || 0) + 1;
+    });
+
+    Object.entries(hashtagCounts).forEach(([tag, count]) => {
+      if (count >= 3) {
+        duplicates.push(`#${tag}`);
+      }
+    });
+
+    return duplicates;
   };
 
   // Handle saving data
-  const handleSave = () => {
-    const finalHashtags = [
-      ...newPost.hashtags.filter(t => t !== '#favorites'),
-      '#favorites'
-    ];
+  const handleSave = async () => {
+    const duplicateHashtags = checkForDuplicateHashtags(selectedHashtags);
+    if (duplicateHashtags.length > 0) {
+      setHashtagWarnings({
+        message: `These hashtags have 3+ posts: ${duplicateHashtags.join(', ')}`,
+        hashtags: duplicateHashtags
+      });
+      setReplacementMode(true);
+      return;
+    }
 
-    onSave({
-      ...newPost,
-      id: `post-${Date.now()}`,
-      hashtags: [...new Set(finalHashtags)],
-      isXPost: true
-    });
-    onClose();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    // Ensure lowercase and no duplicates
+    const userTags = selectedHashtags
+      .map(tag => tag.replace(/#/g, '').trim().toLowerCase())
+      .filter(tag => tag.length > 0);
+    
+    // Always include #favorites
+    const finalTags = Array.from(new Set([...userTags, 'favorites']));
+    
+    const postData = {
+      title: `Post ${Date.now()}`,
+      url: newPost.url,
+      description: formData.description,
+      hashtags: finalTags, // Store without # prefix
+      isXPost: newPost.url.includes('twitter.com') || newPost.url.includes('x.com')
+    };
+
+    console.log('Saving post with tags:', finalTags); // Debug log
+
+    try {
+      await api.savePost(postData);
+      onSuccess();
+      onClose();
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
+  };
+
+  // Add replacement handler
+  const handleReplaceVideo = (videoId) => {
+    setSelectedReplacement(videoId);
+    // Actual replacement logic would go here
+    setReplacementMode(false);
   };
 
   // Handle the Enter key press
@@ -184,7 +217,7 @@ const UploadModal = ({
         {/* Buttons */}
         <div className="modal-buttons">
           <button onClick={handleSave} className="upload-button">
-            Upload
+            {isUploading ? 'Uploading...' : 'Upload'}
           </button>
           <button className="close-button" onClick={onClose}>
             Close
@@ -197,7 +230,7 @@ const UploadModal = ({
             <h4>{hashtagWarnings.message}</h4>
             <div className="replacement-list">
               {existingVideos.filter(v => 
-                v.hashtags.some(t => finalHashtags.includes(t))
+                v.hashtags.some(t => formData.hashtags.includes(t))
               ).map(video => (
                 <div 
                   key={video.id}
@@ -222,7 +255,10 @@ UploadModal.propTypes = {
   existingVideos: PropTypes.array,
   initialData: PropTypes.object,
   fields: PropTypes.array,
-  title: PropTypes.string
+  title: PropTypes.string,
+  selectedHashtags: PropTypes.array,
+  isXPost: PropTypes.bool,
+  onSuccess: PropTypes.func.isRequired
 };
 
 export default UploadModal;

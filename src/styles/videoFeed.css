@@ -1,0 +1,20 @@
+.video-feed {
+  min-height: 100vh;
+}
+
+.twitter-tweet {
+  width: 100% !important;
+  min-width: 300px !important;
+  margin: 20px 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.video-item {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+} 
