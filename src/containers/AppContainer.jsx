@@ -6,7 +6,7 @@ import ErrorModal from "../components/modals/ErrorModal";
 import Bio from "../components/profile/Bio";
 import SocialLinks from "../components/profile/SocialLinks";
 import ProfilePicture from "../components/profile/ProfilePicture";
-import Achievements from "../components/profile/Achievements";
+import Achievements from "../components/profile/achievements";
 import "../styles/highlight.css";
 import "../styles/global.css";
 import NavBar from '../components/navigation/NavBar';
