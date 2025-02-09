@@ -1,4 +1,4 @@
-const mockPosts = [
+let mockPosts = [
   {
     id: '1',
     title: 'Welcome Post',
@@ -9,33 +9,21 @@ const mockPosts = [
   }
 ];
 
-async function getPosts(hashtags) {
-  const searchTags = hashtags.map(tag => 
-    tag.toLowerCase().replace(/#/g, '').trim()
-  );
-
-  console.log('Search Tags:', searchTags);
-  
-  return mockPosts.filter(post => {
-    const postTags = post.hashtags.map(tag => 
-      tag.toLowerCase().replace(/#/g, '').trim()
-    );
-    console.log(`Post ${post.id} Tags:`, postTags);
-    return searchTags.length === 0 || searchTags.every(st => postTags.includes(st));
-  });
+async function getPosts() {
+  return [...mockPosts];
 }
 
 async function savePost(post) {
   const newPost = {
     ...post,
-    hashtags: post.hashtags.map(tag => `#${tag}`),
+    hashtags: post.hashtags.map(tag => `#${tag.replace(/#/g, '')}`),
     id: `post-${Date.now()}`,
     isXPost: /(twitter\.com|x\.com)/.test(post.url),
     createdAt: new Date().toISOString()
   };
   
-  mockPosts.unshift(newPost);
-  console.log('Saved Post:', newPost);
+  console.log('[API] Saving post:', JSON.parse(JSON.stringify(newPost)));
+  mockPosts = [newPost, ...mockPosts];
   return newPost;
 }
 

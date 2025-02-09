@@ -39,41 +39,15 @@ const VideoFeed = ({ hashtags }) => {
   }, [hashtags]);
 
   useEffect(() => {
-    const loadTwitter = () => {
-      let script;
-      
-      if (!document.querySelector('script[src^="https://platform.twitter.com/widgets.js"]')) {
-        script = document.createElement('script');
-        script.src = "https://platform.twitter.com/widgets.js";
-        script.async = true;
-        script.charset = "utf-8";
-        document.body.appendChild(script);
-      }
-
-      if (script) {
-        script.onload = () => {
-          window.twttr?.widgets?.load(document.getElementById('video-feed-container'));
-        };
-      } else {
-        setTimeout(() => {
-          window.twttr?.widgets?.load();
-        }, 500);
-      }
-    };
-
-    const initTimer = setTimeout(loadTwitter, 300);
-    const containerCheck = setInterval(() => {
-      if (document.getElementById('video-feed-container')) {
-        window.twttr?.widgets?.load();
-        clearInterval(containerCheck);
-      }
-    }, 200);
+    const script = document.createElement('script');
+    script.src = "https://platform.twitter.com/widgets.js";
+    script.async = true;
+    document.body.appendChild(script);
 
     return () => {
-      clearTimeout(initTimer);
-      clearInterval(containerCheck);
+      document.body.removeChild(script);
     };
-  }, [videos]);
+  }, []);
 
   return (
     <div id="video-feed-container" className="video-feed">
@@ -81,7 +55,7 @@ const VideoFeed = ({ hashtags }) => {
       {!isLoading && videos.map((video) => (
         <div key={video.id} className="video-item">
           {video.isXPost ? (
-            <blockquote className="twitter-tweet" data-lang="en">
+            <blockquote className="twitter-tweet">
               <a href={video.url}></a>
             </blockquote>
           ) : (

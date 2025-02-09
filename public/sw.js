@@ -1,13 +1,13 @@
-// Add proper event listener registration
+// Minimal valid service worker
 self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    clients.claim().catch(console.error)
-  );
+  e.waitUntil(clients.claim());
 });
 
-// Add empty fetch handler
-self.addEventListener('fetch', () => {}); 
+// Dummy fetch handler
+self.addEventListener('fetch', (e) => {
+  e.respondWith(fetch(e.request));
+}); 

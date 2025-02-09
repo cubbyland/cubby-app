@@ -15,6 +15,7 @@ import SearchBar from '../components/cubby/SearchBar';
 import api from '../api/client';
 import VideoFeed from '../components/videos/VideoFeed';
 import Spinner from 'react-bootstrap/Spinner';
+import { Helmet } from 'react-helmet-async';
 
 const AppContainer = () => {
   // Profile Section State
@@ -43,24 +44,18 @@ const AppContainer = () => {
 
   const [allPosts, setAllPosts] = useState([]);
 
-  // Add loading effect
-  useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        const posts = await api.getPosts([]);
-        setAllPosts(posts);
-        setCurationVideos(posts.slice(0, 3)); // Initial 3 videos
-      } catch (err) {
-        console.error('Initial load failed:', err);
-      } finally {
-        setInitialLoad(false);
-      }
-    };
+  // Add real data refresh
+  const refreshPosts = async () => {
+    console.log('[App] Refreshing posts...');
+    const posts = await api.getPosts();
+    console.log('[App] Received posts:', posts);
+    setAllPosts(posts);
+    setCurationVideos(posts.slice(0, 3));
+  };
 
-    if (initialLoad) {
-      loadInitialData();
-    }
-  }, [initialLoad]); // Dependency ensures single run
+  useEffect(() => {
+    refreshPosts();
+  }, [refreshKey]); // Add refreshKey dependency
 
   // Modify useEffect
   useEffect(() => {
@@ -99,14 +94,6 @@ const AppContainer = () => {
       controller.abort();
     };
   }, [searchHashtags]);
-
-  useEffect(() => {
-    const loadPosts = async () => {
-      const posts = await api.getPosts([]);
-      setAllPosts(posts);
-    };
-    loadPosts();
-  }, [refreshKey]);
 
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
 
@@ -211,13 +198,40 @@ const AppContainer = () => {
 
   const handleUploadSuccess = () => {
     setRefreshKey(prev => prev + 1);
-    if (window.twttr) {
-      window.twttr.widgets.load();
-    }
+    refreshPosts(); // Force immediate refresh
   };
+
+  // Update the useEffect
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const posts = await api.getPosts();
+        console.log('Loaded posts:', posts); // Debug log
+        setAllPosts(posts);
+        setCurationVideos(posts.slice(0, 3));
+      } catch (err) {
+        console.error('Initial load error:', err);
+      } finally {
+        setInitialLoad(false); // Always set loading to false
+      }
+    };
+
+    // Only load if initialLoad is true
+    if (initialLoad) {
+      loadInitialData();
+    }
+  }, [initialLoad]); // Add dependency
 
   return (
     <div className="app-container">
+      <Helmet>
+        <script 
+          async 
+          src="https://platform.twitter.com/widgets.js" 
+          charSet="utf-8"
+        />
+      </Helmet>
+      
       {initialLoad ? (
         <div className="loading-screen">
           <Spinner animation="border" />

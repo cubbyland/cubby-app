@@ -11,7 +11,7 @@ const UploadModal = ({
   fields = [], 
   title = 'Upload Video', 
   existingVideos = [],
-  selectedHashtags = [],
+  initialHashtags = [],
   isXPost,
   onSuccess
 }) => {
@@ -33,6 +33,9 @@ const UploadModal = ({
   });
   const [errors, setErrors] = useState({});
   const [isUploading, setIsUploading] = useState(false);
+  const [localHashtags, setLocalHashtags] = useState(
+    [...new Set([...initialHashtags, 'favorites'])] // Merge with default
+  );
 
   // Add URL validation
   useEffect(() => {
@@ -45,22 +48,17 @@ const UploadModal = ({
     setFormData({ ...formData, [fieldName]: e.target.value });
   };
 
-  const handleAddHashtag = () => {
-    const hashtag = inputHashtag.trim().replace(/#/g, '');
-    if (hashtag && !formData.hashtags.includes(`#${hashtag}`)) {
-      setFormData(prev => ({
-        ...prev,
-        hashtags: [...prev.hashtags, `#${hashtag}`]
-      }));
-      setInputHashtag('');
+  const handleHashtagAdd = (newTag) => {
+    const cleanTag = newTag.replace(/#/g, '').trim().toLowerCase();
+    if (cleanTag && !localHashtags.includes(cleanTag)) {
+      setLocalHashtags(prev => [...prev, cleanTag]);
     }
   };
 
-  const removeHashtag = (tagToRemove) => {
-    setFormData(prev => ({
-      ...prev,
-      hashtags: prev.hashtags.filter(tag => tag !== tagToRemove)
-    }));
+  const handleHashtagRemove = (tagToRemove) => {
+    setLocalHashtags(prev => 
+      prev.filter(tag => tag !== tagToRemove && tag !== 'favorites')
+    );
   };
 
   // Update the regex pattern
@@ -100,7 +98,7 @@ const UploadModal = ({
 
   // Handle saving data
   const handleSave = async () => {
-    const duplicateHashtags = checkForDuplicateHashtags(selectedHashtags);
+    const duplicateHashtags = checkForDuplicateHashtags(localHashtags);
     if (duplicateHashtags.length > 0) {
       setHashtagWarnings({
         message: `These hashtags have 3+ posts: ${duplicateHashtags.join(', ')}`,
@@ -117,7 +115,7 @@ const UploadModal = ({
     }
 
     // Ensure lowercase and no duplicates
-    const userTags = selectedHashtags
+    const userTags = localHashtags
       .map(tag => tag.replace(/#/g, '').trim().toLowerCase())
       .filter(tag => tag.length > 0);
     
@@ -200,15 +198,15 @@ const UploadModal = ({
               placeholder="Add hashtag..."
               value={inputHashtag}
               onChange={(e) => setInputHashtag(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddHashtag()}
+              onKeyPress={(e) => e.key === 'Enter' && handleHashtagAdd(e.target.value)}
             />
-            <button onClick={handleAddHashtag}>Add</button>
+            <button onClick={() => handleHashtagAdd(inputHashtag)}>Add</button>
           </div>
           <div className="hashtag-container">
-            {formData.hashtags.map(tag => (
+            {localHashtags.map(tag => (
               <span key={tag} className="hashtag">
                 {tag}
-                <button onClick={() => removeHashtag(tag)}>×</button>
+                <button onClick={() => handleHashtagRemove(tag)}>×</button>
               </span>
             ))}
           </div>
@@ -230,7 +228,7 @@ const UploadModal = ({
             <h4>{hashtagWarnings.message}</h4>
             <div className="replacement-list">
               {existingVideos.filter(v => 
-                v.hashtags.some(t => formData.hashtags.includes(t))
+                v.hashtags.some(t => localHashtags.includes(t))
               ).map(video => (
                 <div 
                   key={video.id}
@@ -256,7 +254,7 @@ UploadModal.propTypes = {
   initialData: PropTypes.object,
   fields: PropTypes.array,
   title: PropTypes.string,
-  selectedHashtags: PropTypes.array,
+  initialHashtags: PropTypes.array,
   isXPost: PropTypes.bool,
   onSuccess: PropTypes.func.isRequired
 };
